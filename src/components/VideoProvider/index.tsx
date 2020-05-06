@@ -58,6 +58,9 @@ export function VideoProvider({ options, children, onError = () => {}, onDisconn
   useHandleTrackPublicationFailed(room, onError);
   useHandleOnDisconnect(room, onDisconnect);
 
+  // const videoContext = useContext(VideoContext)
+  // const room = videoContext.room
+
   return (
     <VideoContext.Provider
       value={{
