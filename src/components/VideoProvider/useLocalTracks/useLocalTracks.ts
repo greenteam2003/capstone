@@ -55,12 +55,43 @@ export function useLocalVideoTrack() {
       ...newOptions,
     };
 
-    return ensureMediaPermissions().then(() =>
-      Video.createLocalVideoTrack(options).then(newTrack => {
-        setTrack(newTrack);
-        return newTrack;
-      })
-    );
+    // could hijack what navigator.getUserMedia does to instead reference canvas.captureStream()
+    // if we did this 'monkey-chaining', then can we grab audio from the original getUserMedia, and video from canvas.captureStream()
+
+    // let originalMediaDevicesGetUserMedia = navigator.mediaDevices.getUserMedia;
+
+    // navigator.mediaDevices.getUserMedia = function(constraints) {
+    // 	console.log('OUR NEW FUNCTION IS WORKING');
+    // 	return new Promise<MediaStream>((resolve, reject) => {
+    // 		originalMediaDevicesGetUserMedia
+    // 			.bind(navigator.mediaDevices)(constraints)
+    // 			.then(stream => resolve(/*enhance*/ stream))
+    // 			.catch(reject);
+    // 	});
+    // };
+
+    // const enhance = () => {
+    // 	const canvas = document.getElementById('myCanvas') as any;
+    // 	const stream = canvas.captureStream(25);
+    // 	return stream;
+    // };
+
+    return ensureMediaPermissions().then(() => {
+      const canvas = document.getElementById('myCanvas') as any;
+
+      // still need to test this part out with konva
+      if (canvas.captureStream(25).getVideoTracks.length > 0) {
+        const mediaStreamTrack = canvas.captureStream(25).getVideoTracks[0];
+        const canvasVideoTrack = new LocalVideoTrack(mediaStreamTrack);
+        setTrack(canvasVideoTrack);
+        return canvasVideoTrack;
+      } else {
+        Video.createLocalVideoTrack(options).then(newTrack => {
+          setTrack(newTrack);
+          return newTrack;
+        });
+      }
+    });
   }, []);
 
   useEffect(() => {
