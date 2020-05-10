@@ -77,15 +77,20 @@ export function useLocalVideoTrack() {
     // };
 
     return ensureMediaPermissions().then(() => {
-      const canvas = document.getElementById('myCanvas') as any;
+      const canvas = document.getElementsByTagName('canvas')[0] as any;
 
       // still need to test this part out with konva
-      if (canvas.captureStream(25).getVideoTracks.length > 0) {
-        const mediaStreamTrack = canvas.captureStream(25).getVideoTracks[0];
+      console.log('canvas variable: ', canvas);
+      const canvasCaptureStream = canvas.captureStream(25).getVideoTracks();
+      console.log('canvas captured stream videotracks: ', canvasCaptureStream);
+      if (canvas.captureStream(25).getVideoTracks().length > 0) {
+        console.log("I'M HITTING THE CODE I WANT, CAPTURING VIDEO STREAM");
+        const mediaStreamTrack = canvas.captureStream(25).getVideoTracks()[0];
         const canvasVideoTrack = new LocalVideoTrack(mediaStreamTrack);
         setTrack(canvasVideoTrack);
         return canvasVideoTrack;
       } else {
+        console.log("FOR SOME REASON I'M STILL NOT WORKING");
         Video.createLocalVideoTrack(options).then(newTrack => {
           setTrack(newTrack);
           return newTrack;
