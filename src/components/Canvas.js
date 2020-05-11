@@ -1,6 +1,5 @@
 // import Konva from 'konva';
 import React from 'react';
-import { render } from 'react-dom';
 import { Stage, Layer, Circle } from 'react-konva';
 
 class Canvas extends React.Component {

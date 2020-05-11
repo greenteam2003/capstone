@@ -8,7 +8,8 @@ export default function useLocalVideoToggle() {
     localTracks,
     getLocalVideoTrack,
   } = useVideoContext();
-  const videoTrack = localTracks.find(track => track.name.includes('camera')) as LocalVideoTrack;
+  console.log('FINDING LOCAL TRACKS: ', localTracks);
+  const videoTrack = localTracks.find(track => track.kind.includes('video')) as LocalVideoTrack;
 
   const toggleVideoEnabled = useCallback(() => {
     if (videoTrack) {

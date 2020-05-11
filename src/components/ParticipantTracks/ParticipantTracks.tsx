@@ -32,16 +32,16 @@ export default function ParticipantTracks({
   let filteredPublications;
 
   if (enableScreenShare && publications.some(p => p.trackName.includes('screen'))) {
-    filteredPublications = publications.filter(p => !p.trackName.includes('camera'));
+    filteredPublications = publications.filter(p => !p.kind.includes('video'));
   } else {
     filteredPublications = publications.filter(p => !p.trackName.includes('screen'));
   }
 
   return (
     <>
-      {filteredPublications.map(publication => (
+      {filteredPublications.map((publication, i) => (
         <Publication
-          key={publication.kind}
+          key={publication.kind + i}
           publication={publication}
           participant={participant}
           isLocal={isLocal}

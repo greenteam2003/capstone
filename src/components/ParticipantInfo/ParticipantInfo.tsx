@@ -83,7 +83,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
   const publications = usePublications(participant);
 
   const audioPublication = publications.find(p => p.kind === 'audio');
-  const videoPublication = publications.find(p => p.trackName.includes('camera'));
+  const videoPublication = publications.find(p => p.kind.includes('video'));
 
   const networkQualityLevel = useParticipantNetworkQualityLevel(participant);
   const isVideoEnabled = Boolean(videoPublication);

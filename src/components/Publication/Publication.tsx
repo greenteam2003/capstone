@@ -31,7 +31,7 @@ export default function Publication({ publication, isLocal, disableAudio, videoP
         <VideoTrack
           track={track as IVideoTrack}
           priority={videoPriority}
-          isLocal={track.name.includes('camera') && isLocal}
+          isLocal={track.kind.includes('video') && isLocal}
         />
       );
     case 'audio':

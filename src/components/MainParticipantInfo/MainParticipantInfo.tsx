@@ -49,7 +49,7 @@ export default function MainParticipantInfo({ participant, children }: MainParti
   const classes = useStyles();
 
   const publications = usePublications(participant);
-  const videoPublication = publications.find(p => p.trackName.includes('camera'));
+  const videoPublication = publications.find(p => p.kind.includes('video'));
   const screenSharePublication = publications.find(p => p.trackName.includes('screen'));
   const isVideoEnabled = Boolean(videoPublication);
 
