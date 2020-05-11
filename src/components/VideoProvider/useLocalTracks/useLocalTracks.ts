@@ -77,7 +77,7 @@ export function useLocalVideoTrack() {
     // };
 
     return ensureMediaPermissions().then(() => {
-      const canvas = document.getElementsByTagName('canvas')[0] as any;
+      const canvas = document.getElementById('output-canvas') as any;
 
       // still need to test this part out with konva
       console.log('canvas variable: ', canvas);
