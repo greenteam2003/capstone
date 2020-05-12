@@ -1,6 +1,6 @@
 // import Konva from 'konva';
 import React from 'react';
-import { Stage, Layer, Circle } from 'react-konva';
+// import { Stage, Layer, Circle } from 'react-konva';
 
 const bodyPix = require('@tensorflow-models/body-pix');
 // import regeneratorRuntime from 'regenerator-runtime';
@@ -15,8 +15,6 @@ class Canvas extends React.Component {
     this.startCam = this.startCam.bind(this);
     this.stopCam = this.stopCam.bind(this);
     this.segmentAndMask = this.segmentAndMask.bind(this);
-    this.continuouslySegmentAndMask = this.continuouslySegmentAndMask.bind(this);
-    // this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -143,20 +141,17 @@ class Canvas extends React.Component {
       console.log('Please turn on the camera first!');
     }
   }
-  continuouslySegmentAndMask() {
-    //continuously renders next frame of video
-    var video = document.getElementById('video');
-    if (video.srcObject && this.state._isMounted) {
-      requestAnimationFrame(() => {
-        console.log('this', this);
-        this.segmentAndMask();
-      });
-    }
-    //if cam is running then continue this function if not, then stop this function
-    //Also, check if component is mounted first before running this fn
-  }
-  // handleClick() {
-  //   this.props.setSegmented(true);
+  // continuouslySegmentAndMask() {
+  //   //continuously renders next frame of video
+  //   var video = document.getElementById('video');
+  //   if (video.srcObject && this.state._isMounted) {
+  //     requestAnimationFrame(() => {
+  //       console.log('this', this);
+  //       this.segmentAndMask();
+  //     });
+  //   }
+  //   //if cam is running then continue this function if not, then stop this function
+  //   //Also, check if component is mounted first before running this fn
   // }
 
   render() {
@@ -175,8 +170,7 @@ class Canvas extends React.Component {
           </div>
           <hr />
           {/* OUTPUT CANVAS */}
-          <canvas id="output-canvas" />
-          {/* <button onClick={this.handleClick}>Take me in!</button> */}
+          <canvas id="output-canvas" hidden />
         </div>
       </div>
     );
