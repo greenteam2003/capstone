@@ -6,7 +6,7 @@ import LocalVideoPreview from './components/LocalVideoPreview/LocalVideoPreview'
 import MenuBar from './components/MenuBar/MenuBar';
 import ReconnectingNotification from './components/ReconnectingNotification/ReconnectingNotification';
 import Room from './components/Room/Room';
-import Canvas from './components/Canvas';
+// import Canvas from './components/Canvas';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
@@ -22,7 +22,7 @@ const Main = styled('main')({
 
 export default function App() {
   const roomState = useRoomState();
-  const [segmented, setSegmented] = useState(false);
+  // const [segmented, setSegmented] = useState(false);
 
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -31,9 +31,9 @@ export default function App() {
   // will look good on mobile browsers even after the location bar opens or closes.
   const height = useHeight();
 
-  if (!segmented) {
-    return <Canvas setSegmented={setSegmented} />;
-  }
+  // if (!segmented) {
+  //   return <Canvas setSegmented={setSegmented} />;
+  // }
 
   return (
     <Container style={{ height }}>
