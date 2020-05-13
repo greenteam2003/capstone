@@ -31,25 +31,35 @@ export default function ParticipantStrip() {
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
+  function onStartDrag() {
+    console.log('This is a drag');
+  }
+
   return (
     <Container>
-      <Draggable>
-        <ScrollContainer>
-          <Participant
-            participant={localParticipant}
-            isSelected={selectedParticipant === localParticipant}
-            onClick={() => setSelectedParticipant(localParticipant)}
-          />
-          {participants.map(participant => (
+      <ScrollContainer>
+        <Draggable onStart={onStartDrag}>
+          <div>
             <Participant
-              key={participant.sid}
-              participant={participant}
-              isSelected={selectedParticipant === participant}
-              onClick={() => setSelectedParticipant(participant)}
+              participant={localParticipant}
+              isSelected={selectedParticipant === localParticipant}
+              // onClick={() => setSelectedParticipant(localParticipant)}
             />
-          ))}
-        </ScrollContainer>
-      </Draggable>
+          </div>
+        </Draggable>
+        {participants.map(participant => (
+          <Draggable>
+            <div>
+              <Participant
+                key={participant.sid}
+                participant={participant}
+                isSelected={selectedParticipant === participant}
+                // onClick={() => setSelectedParticipant(participant)}
+              />
+            </div>
+          </Draggable>
+        ))}
+      </ScrollContainer>
     </Container>
   );
 }
