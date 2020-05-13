@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-      height: `${(theme.sidebarWidth * 9) / 16}px`,
+      height: '100%',
       overflow: 'hidden',
       cursor: 'pointer',
       '& video': {
@@ -75,15 +75,15 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ParticipantInfoProps {
   participant: Participant;
   children: React.ReactNode;
-  onClick: () => void;
+  // onClick: () => void;
   isSelected: boolean;
 }
 
-export default function ParticipantInfo({ participant, onClick, isSelected, children }: ParticipantInfoProps) {
+export default function ParticipantInfo({ participant, /*onClick,*/ isSelected, children }: ParticipantInfoProps) {
   const publications = usePublications(participant);
 
   const audioPublication = publications.find(p => p.kind === 'audio');
-  const videoPublication = publications.find(p => p.trackName.includes('camera'));
+  const videoPublication = publications.find(p => p.kind.includes('video'));
 
   const networkQualityLevel = useParticipantNetworkQualityLevel(participant);
   const isVideoEnabled = Boolean(videoPublication);
@@ -101,7 +101,7 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
       className={clsx(classes.container, {
         [classes.isVideoSwitchedOff]: isVideoSwitchedOff,
       })}
-      onClick={onClick}
+      /*onClick={onClick}*/
       data-cy-participant={participant.identity}
     >
       <div className={clsx(classes.infoContainer, { [classes.hideVideo]: !isVideoEnabled })}>
