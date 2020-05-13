@@ -7,7 +7,7 @@ import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useS
 
 import Draggable from 'react-draggable';
 
-const Container = styled('aside')(({ theme }) => ({
+const Container = styled('div')(({ theme }) => ({
   padding: '0.5em',
   overflowY: 'auto',
   [theme.breakpoints.down('xs')]: {
@@ -36,31 +36,33 @@ export default function ParticipantStrip() {
   }
 
   return (
-    <Container>
-      <ScrollContainer>
-        <Draggable onStart={onStartDrag}>
-          <div>
+    // <Container>
+    //   <ScrollContainer>
+    <div>
+      <Draggable onStart={onStartDrag}>
+        <div style={{ width: '300px', height: '200px' }}>
+          <Participant
+            participant={localParticipant}
+            isSelected={selectedParticipant === localParticipant}
+            // onClick={() => setSelectedParticipant(localParticipant)}
+          />
+        </div>
+      </Draggable>
+      {participants.map(participant => (
+        <Draggable>
+          <div style={{ width: '300px', height: '200px' }}>
             <Participant
-              participant={localParticipant}
-              isSelected={selectedParticipant === localParticipant}
-              // onClick={() => setSelectedParticipant(localParticipant)}
+              key={participant.sid}
+              participant={participant}
+              isSelected={selectedParticipant === participant}
+              // onClick={() => setSelectedParticipant(participant)}
             />
           </div>
         </Draggable>
-        {participants.map(participant => (
-          <Draggable>
-            <div>
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                isSelected={selectedParticipant === participant}
-                // onClick={() => setSelectedParticipant(participant)}
-              />
-            </div>
-          </Draggable>
-        ))}
-      </ScrollContainer>
-    </Container>
+      ))}
+    </div>
+    //   </ScrollContainer>
+    // </Container>
   );
 }
 
