@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Participant from '../Participant/Participant';
 import { styled } from '@material-ui/core/styles';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
@@ -26,7 +26,15 @@ const ScrollContainer = styled('div')(({ theme }) => ({
 }));
 
 export default function ParticipantStrip() {
-  const [position] = useObjectVal<ControlPosition>(db.ref('participants/position'));
+  const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
+  const [room] = useObjectVal(db.ref('roomId'));
+
+  // useEffect(() => {
+  //   // function createRoomRef(){
+  //   // const [room] = useObjectVal(db.ref('roomId'));
+  //   console.log('Room', room);
+  //   // }
+  // });
 
   const [helloPosition, setHelloPosition] = useState(position);
   const {
@@ -52,12 +60,19 @@ export default function ParticipantStrip() {
 
     // send to firebase
   }
-
+  console.log('Local', localParticipant);
+  console.log('Remote', participants);
+  console.log('room', room);
+  console.log('Position', position);
   return (
     // <Container>
     //   <ScrollContainer>
     <div>
-      <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+      <Draggable
+        position={room ? room[localParticipant.identity].position : position}
+        onDrag={onStartDrag}
+        onStop={handleDragStop}
+      >
         <div style={{ width: '300px', height: '200px' }}>
           <Participant
             key={localParticipant.sid}
@@ -68,7 +83,11 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+        <Draggable
+          position={room ? room[participant.identity].position : position}
+          onDrag={onStartDrag}
+          onStop={handleDragStop}
+        >
           <div style={{ width: '300px', height: '200px' }}>
             <Participant
               key={participant.sid}
