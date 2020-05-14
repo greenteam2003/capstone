@@ -7,23 +7,24 @@ import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useS
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
+import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 
-const Container = styled('div')(({ theme }) => ({
-  padding: '0.5em',
-  overflowY: 'auto',
-  [theme.breakpoints.down('xs')]: {
-    overflowY: 'initial',
-    overflowX: 'auto',
-    padding: 0,
-    display: 'flex',
-  },
-}));
+// const Container = styled('div')(({ theme }) => ({
+//   padding: '0.5em',
+//   overflowY: 'auto',
+//   [theme.breakpoints.down('xs')]: {
+//     overflowY: 'initial',
+//     overflowX: 'auto',
+//     padding: 0,
+//     display: 'flex',
+//   },
+// }));
 
-const ScrollContainer = styled('div')(({ theme }) => ({
-  [theme.breakpoints.down('xs')]: {
-    display: 'flex',
-  },
-}));
+// const ScrollContainer = styled('div')(({ theme }) => ({
+//   [theme.breakpoints.down('xs')]: {
+//     display: 'flex',
+//   },
+// }));
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
@@ -36,17 +37,38 @@ export default function ParticipantStrip() {
   //   // }
   // });
 
-  const [helloPosition, setHelloPosition] = useState(position);
   const {
     room: { localParticipant },
   } = useVideoContext();
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
+  const [helloPosition, setHelloPosition] = useState(position);
+  const [localPosition, setLocalPosition] = useState(room ? room[localParticipant.identity].position : position);
+  // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
+
   function onStartDrag(e, position) {
     e.preventDefault();
-    setHelloPosition(position);
+    console.log('event', e.target);
+    console.log('SElected Participant', selectedParticipant);
+    setLocalPosition(position);
   }
+
+  // function onStartRemoteDrag(e, position) {
+  //   e.preventDefault();
+  //   if(selectedParticipant){
+  //      var updated = {
+  //     selectedParticipant.identity: {
+  //       name: selectedParticipant.identity,
+  //       position: position
+  //     }
+  //   }
+  //    setRoom(prevRoom=>{
+  //     return {...prevRoom, ...updated}
+  //   })
+  //   }
+
+  // }
   function handleDragStop(e, position) {
     e.preventDefault();
     console.log('STOP');
@@ -56,7 +78,7 @@ export default function ParticipantStrip() {
     const newPosition = { x: position.x, y: position.y };
 
     ///set
-    db.ref('participants').set(newPosition);
+    db.ref(`roomId/${localParticipant.identity}/position`).set(newPosition);
 
     // send to firebase
   }
@@ -78,14 +100,16 @@ export default function ParticipantStrip() {
             key={localParticipant.sid}
             participant={localParticipant}
             isSelected={selectedParticipant === localParticipant}
-            // onClick={() => setSelectedParticipant(participant)}
+            onClick={() => setSelectedParticipant(localParticipant)}
           />
         </div>
       </Draggable>
       {participants.map(participant => (
+        // <div>
+        //   <div className={participant.identity} />
         <Draggable
           position={room ? room[participant.identity].position : position}
-          onDrag={onStartDrag}
+          onDrag={/*onStartRemoteDrag*/ onStartDrag}
           onStop={handleDragStop}
         >
           <div style={{ width: '300px', height: '200px' }}>
@@ -93,10 +117,11 @@ export default function ParticipantStrip() {
               key={participant.sid}
               participant={participant}
               isSelected={selectedParticipant === participant}
-              // onClick={() => setSelectedParticipant(participant)}
+              onClick={() => setSelectedParticipant(participant)}
             />
           </div>
         </Draggable>
+        // </div>
       ))}
     </div>
     //   </ScrollContainer>
