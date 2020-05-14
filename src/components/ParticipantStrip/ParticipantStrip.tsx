@@ -8,7 +8,7 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 
-const Container = styled('aside')(({ theme }) => ({
+const Container = styled('div')(({ theme }) => ({
   padding: '0.5em',
   overflowY: 'auto',
   [theme.breakpoints.down('xs')]: {
@@ -54,31 +54,34 @@ export default function ParticipantStrip() {
   }
 
   return (
-    <Container>
-      <ScrollContainer>
+    // <Container>
+    //   <ScrollContainer>
+    <div>
+      <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+        <div style={{ width: '300px', height: '200px' }}>
+          <Participant
+            key={localParticipant.sid}
+            participant={localParticipant}
+            isSelected={selectedParticipant === localParticipant}
+            // onClick={() => setSelectedParticipant(participant)}
+          />
+        </div>
+      </Draggable>
+      {participants.map(participant => (
         <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
-          <div>
+          <div style={{ width: '300px', height: '200px' }}>
             <Participant
-              participant={localParticipant}
-              isSelected={selectedParticipant === localParticipant}
-              // onClick={() => setSelectedParticipant(localParticipant)}
+              key={participant.sid}
+              participant={participant}
+              isSelected={selectedParticipant === participant}
+              // onClick={() => setSelectedParticipant(participant)}
             />
           </div>
         </Draggable>
-        {participants.map(participant => (
-          <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
-            <div>
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                isSelected={selectedParticipant === participant}
-                // onClick={() => setSelectedParticipant(participant)}
-              />
-            </div>
-          </Draggable>
-        ))}
-      </ScrollContainer>
-    </Container>
+      ))}
+    </div>
+    //   </ScrollContainer>
+    // </Container>
   );
 }
 
