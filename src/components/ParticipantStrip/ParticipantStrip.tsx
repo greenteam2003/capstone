@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Participant from '../Participant/Participant';
 import { styled } from '@material-ui/core/styles';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
-
-import Draggable from 'react-draggable';
+import { useObjectVal } from 'react-firebase-hooks/database';
+import { db } from '../../firebase';
+import Draggable, { ControlPosition } from 'react-draggable';
 
 const Container = styled('div')(({ theme }) => ({
   padding: '0.5em',
@@ -25,31 +26,49 @@ const ScrollContainer = styled('div')(({ theme }) => ({
 }));
 
 export default function ParticipantStrip() {
+  const [position] = useObjectVal<ControlPosition>(db.ref('participants/position'));
+
+  const [helloPosition, setHelloPosition] = useState(position);
   const {
     room: { localParticipant },
   } = useVideoContext();
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
-  function onStartDrag() {
-    console.log('This is a drag');
+  function onStartDrag(e, position) {
+    e.preventDefault();
+    setHelloPosition(position);
+  }
+  function handleDragStop(e, position) {
+    e.preventDefault();
+    console.log('STOP');
+    console.log('position X', position.x);
+    console.log('position y', position.y);
+
+    const newPosition = { x: position.x, y: position.y };
+
+    ///set
+    db.ref('participants').set(newPosition);
+
+    // send to firebase
   }
 
   return (
     // <Container>
     //   <ScrollContainer>
     <div>
-      <Draggable onStart={onStartDrag}>
+      <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
         <div style={{ width: '300px', height: '200px' }}>
           <Participant
+            key={localParticipant.sid}
             participant={localParticipant}
             isSelected={selectedParticipant === localParticipant}
-            // onClick={() => setSelectedParticipant(localParticipant)}
+            // onClick={() => setSelectedParticipant(participant)}
           />
         </div>
       </Draggable>
       {participants.map(participant => (
-        <Draggable>
+        <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
           <div style={{ width: '300px', height: '200px' }}>
             <Participant
               key={participant.sid}
