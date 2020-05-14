@@ -6,7 +6,7 @@ import { Track } from 'twilio-video';
 const Video = styled('video')({
   width: '100%',
   maxHeight: '100%',
-  objectFit: 'contain',
+  objectFit: 'fill',
 });
 
 interface VideoTrackProps {
