@@ -8,47 +8,38 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 
-const Container = styled('div')(({ theme }) => ({
-  padding: '0.5em',
-  overflowY: 'auto',
-  [theme.breakpoints.down('xs')]: {
-    overflowY: 'initial',
-    overflowX: 'auto',
-    padding: 0,
-    display: 'flex',
-  },
-}));
+// const Container = styled('div')(({ theme }) => ({
+// 	padding: '0.5em',
+// 	overflowY: 'auto',
+// 	[theme.breakpoints.down('xs')]: {
+// 		overflowY: 'initial',
+// 		overflowX: 'auto',
+// 		padding: 0,
+// 		display: 'flex',
+// 	},
+// }));
 
-const ScrollContainer = styled('div')(({ theme }) => ({
-  [theme.breakpoints.down('xs')]: {
-    display: 'flex',
-  },
-}));
+// const ScrollContainer = styled('div')(({ theme }) => ({
+// 	[theme.breakpoints.down('xs')]: {
+// 		display: 'flex',
+// 	},
+// }));
 
 export default function ParticipantStrip() {
-  const [position] = useObjectVal<ControlPosition>(db.ref('participants/position'));
-
-  const [helloPosition, setHelloPosition] = useState(position);
-  const {
-    room: { localParticipant },
-  } = useVideoContext();
+  const { room } = useVideoContext();
+  const localParticipant = room.localParticipant;
+  const roomName = room.name;
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
-  function onStartDrag(e, position) {
-    e.preventDefault();
-    setHelloPosition(position);
-  }
-  function handleDragStop(e, position) {
-    e.preventDefault();
-    console.log('STOP');
-    console.log('position X', position.x);
-    console.log('position y', position.y);
+  const [position] = useObjectVal<ControlPosition>(db.ref(`/${roomName}/${localParticipant.identity}/position`));
 
-    const newPosition = { x: position.x, y: position.y };
+  function handleDragStop(e, localPosition) {
+    e.preventDefault();
+    const newPosition = { x: localPosition.x, y: localPosition.y };
 
     ///set
-    db.ref('participants').set(newPosition);
+    db.ref(`/${roomName}/${localParticipant.identity}/position`).set(newPosition);
 
     // send to firebase
   }
@@ -57,7 +48,7 @@ export default function ParticipantStrip() {
     // <Container>
     //   <ScrollContainer>
     <div>
-      <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+      <Draggable position={position} onStop={handleDragStop}>
         <div style={{ width: '300px', height: '200px' }}>
           <Participant
             key={localParticipant.sid}
@@ -68,7 +59,7 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+        <Draggable position={position} onStop={handleDragStop}>
           <div style={{ width: '300px', height: '200px' }}>
             <Participant
               key={participant.sid}
