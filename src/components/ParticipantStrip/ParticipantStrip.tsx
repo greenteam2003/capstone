@@ -28,11 +28,11 @@ import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
-  const [dbRoom] = useObjectVal(db.ref());
 
   const { room } = useVideoContext();
   const localParticipant = room.localParticipant;
   const roomName = room.name;
+  const [dbRoom] = useObjectVal(db.ref('/' + roomName));
 
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
@@ -67,28 +67,36 @@ export default function ParticipantStrip() {
   function handleDragStop(e, localPosition) {
     console.log('localPosition', localPosition);
     e.preventDefault();
-
-    const participant = e.target.firstChild.innerText;
+    console.log('target', e.target);
+    // console.log('H4?', e.target.getElementsByTagName('h4'));
+    const participant = e.target.getElementsByTagName('h4')[0].innerText;
     console.log('participant', participant);
-    console.log('room', roomName);
-    console.log('localPosition', localPosition);
+    // console.log('room', roomName);
+    // console.log('localPosition', localPosition);
+    // console.log('DBROOM', dbRoom);
+    const newPosition = { x: localPosition.x, y: localPosition.y };
 
-    if (!isNaN(localPosition.x) && isNaN(localPosition.y)) {
-      const newPosition = { x: localPosition.x, y: localPosition.y };
+    db.ref(`${roomName}/${participant}/position`).set(newPosition);
 
-      db.ref(`${roomName}/${participant}/position`).update(newPosition);
-    }
     console.log();
 
     // send to firebase
   }
-
+  let initialPosition = { x: 0, y: 0 };
   return (
     // <Container>
     //   <ScrollContainer>
-    <div>
+    <div
+      style={{
+        backgroundImage:
+          'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+        backgroundSize: `100%`,
+      }}
+    >
       <Draggable
-        position={dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : position}
+        position={
+          dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
+        }
         onDrag={onStartDrag}
         onStop={handleDragStop}
       >
@@ -102,23 +110,24 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        // <div>
-        //   <div className={participant.identity} />
-        <Draggable
-          position={dbRoom ? dbRoom[participant.identity].position : position}
-          onDrag={onStartDrag}
-          onStop={handleDragStop}
-        >
-          <div style={{ width: '300px', height: '200px' }}>
-            <Participant
-              key={participant.sid}
-              participant={participant}
-              isSelected={selectedParticipant === participant}
-              onClick={() => setSelectedParticipant(participant)}
-            />
-          </div>
-        </Draggable>
-        // </div>
+        <div>
+          <div className={participant.identity} />
+          <Draggable
+            position={dbRoom ? dbRoom[participant.identity].position : position}
+            onDrag={onStartDrag}
+            onStop={handleDragStop}
+          >
+            <div style={{ width: '300px', height: '200px' }}>
+              <Participant
+                key={participant.sid}
+                participant={participant}
+                isSelected={selectedParticipant === participant}
+                onClick={() => setSelectedParticipant(participant)}
+              />
+            </div>
+          </Draggable>
+          //{' '}
+        </div>
       ))}
     </div>
     //   </ScrollContainer>
@@ -127,25 +136,3 @@ export default function ParticipantStrip() {
 }
 
 // const { error, setError } = useAppState();
-
-// return (
-//   <Stage>
-//     <Layer>
-//       <VideoProvider options={connectionOptions} onError={setError}>
-//         <Participant
-//           participant={localParticipant}
-//           isSelected={selectedParticipant === localParticipant}
-//           onClick={() => setSelectedParticipant(localParticipant)}
-//         />
-//         {participants.map(participant => (
-//           <Participant
-//             key={participant.sid}
-//             participant={participant}
-//             isSelected={selectedParticipant === participant}
-//             onClick={() => setSelectedParticipant(participant)}
-//           />
-//         ))}
-//       </VideoProvider>
-//     </Layer>
-//   </Stage>
-// );
