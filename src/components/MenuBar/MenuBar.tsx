@@ -16,6 +16,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Typography } from '@material-ui/core';
 import FlipCameraButton from './FlipCameraButton/FlipCameraButton';
 import { DeviceSelector } from './DeviceSelector/DeviceSelector';
+import { db } from '../../firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -59,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function MenuBar() {
+export default function() {
   const classes = useStyles();
   const { URLRoomName } = useParams();
   const { user, getToken, isFetching } = useAppState();
@@ -90,6 +91,7 @@ export default function MenuBar() {
       window.history.replaceState(null, '', window.encodeURI(`/room/${roomName}${window.location.search || ''}`));
     }
     getToken(name, roomName).then(token => connect(token));
+    db.ref('/' + roomName).update({ [name]: { name: name, position: { x: 0, y: 0 } } });
   };
 
   return (

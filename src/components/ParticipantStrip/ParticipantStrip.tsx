@@ -28,23 +28,18 @@ import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
-  const [room] = useObjectVal(db.ref('roomId'));
+  const [dbRoom] = useObjectVal(db.ref());
 
-  // useEffect(() => {
-  //   // function createRoomRef(){
-  //   // const [room] = useObjectVal(db.ref('roomId'));
-  //   console.log('Room', room);
-  //   // }
-  // });
+  const { room } = useVideoContext();
+  const localParticipant = room.localParticipant;
+  const roomName = room.name;
 
-  const {
-    room: { localParticipant },
-  } = useVideoContext();
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
-  const [helloPosition, setHelloPosition] = useState(position);
-  const [localPosition, setLocalPosition] = useState(room ? room[localParticipant.identity].position : position);
+  // const [ localPosition, setLocalPosition ] = useState(
+  // 	dbRoom ? dbRoom[localParticipant.identity].position : position
+  // );
   // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
   const [ourParticipant, setOurParticipant] = useState(selectedParticipant);
 
@@ -59,37 +54,41 @@ export default function ParticipantStrip() {
 
   function onStartDrag(e, position) {
     e.preventDefault();
-    console.log(e.target.firstChild.innerText);
+
     if (ourParticipant) {
-      console.log('ourParticipant in start', ourParticipant);
       if (ourParticipant.identity === localParticipant.identity) {
-        setLocalPosition(position);
+        console.log('hmm');
       } else {
         console.log('test');
       }
     }
   }
 
-  function handleDragStop(e, position) {
+  function handleDragStop(e, localPosition) {
+    console.log('localPosition', localPosition);
     e.preventDefault();
 
     const participant = e.target.firstChild.innerText;
+    console.log('participant', participant);
+    console.log('room', roomName);
+    console.log('localPosition', localPosition);
 
-    const newPosition = { x: position.x, y: position.y };
-    ////works every other time
+    if (!isNaN(localPosition.x) && isNaN(localPosition.y)) {
+      const newPosition = { x: localPosition.x, y: localPosition.y };
 
-    db.ref(`roomId/${participant}/position`).set(newPosition);
+      db.ref(`${roomName}/${participant}/position`).update(newPosition);
+    }
+    console.log();
 
     // send to firebase
   }
-  console.log('selectedParticipant', selectedParticipant);
 
   return (
     // <Container>
     //   <ScrollContainer>
     <div>
       <Draggable
-        position={room ? room[localParticipant.identity].position : position}
+        position={dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : position}
         onDrag={onStartDrag}
         onStop={handleDragStop}
       >
@@ -106,7 +105,7 @@ export default function ParticipantStrip() {
         // <div>
         //   <div className={participant.identity} />
         <Draggable
-          position={room ? room[participant.identity].position : position}
+          position={dbRoom ? dbRoom[participant.identity].position : position}
           onDrag={onStartDrag}
           onStop={handleDragStop}
         >
