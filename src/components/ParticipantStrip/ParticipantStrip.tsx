@@ -7,7 +7,6 @@ import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useS
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
-
 // const Container = styled('div')(({ theme }) => ({
 // 	padding: '0.5em',
 // 	overflowY: 'auto',
@@ -30,15 +29,23 @@ export default function ParticipantStrip() {
   const localParticipant = room.localParticipant;
   const roomName = room.name;
   const participants = useParticipants();
+  // console.log('participats', participants);
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
-  const [position] = useObjectVal<ControlPosition>(db.ref(`/${roomName}/${localParticipant.identity}/position`));
-
+  // const [position] = useObjectVal<ControlPosition>(db.ref(`/${roomName}/${localParticipant.identity}/position`));
+  const [roomObject] = useObjectVal<ControlPosition>(db.ref(`/${roomName}`));
+  // const positionArray = participants.map(participant => {
+  //   const [participantsPosition] = useObjectVal<ControlPosition>(
+  //     db.ref(`/${roomName}/${participant.identity}/position`)
+  //   );
+  //   return participantsPosition;
+  // });
   function handleDragStop(e, localPosition) {
     e.preventDefault();
     const newPosition = { x: localPosition.x, y: localPosition.y };
 
     ///set
+    console.log('event target', e.target);
     db.ref(`/${roomName}/${localParticipant.identity}/position`).set(newPosition);
 
     // send to firebase
@@ -48,7 +55,7 @@ export default function ParticipantStrip() {
     // <Container>
     //   <ScrollContainer>
     <div>
-      <Draggable position={position} onStop={handleDragStop}>
+      <Draggable position={roomObject[localParticipant.identity].position} onStop={handleDragStop}>
         <div style={{ width: '300px', height: '200px' }}>
           <Participant
             key={localParticipant.sid}
@@ -59,7 +66,7 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        <Draggable position={position} onStop={handleDragStop}>
+        <Draggable position={roomObject[participant.identity].position} onStop={handleDragStop}>
           <div style={{ width: '300px', height: '200px' }}>
             <Participant
               key={participant.sid}

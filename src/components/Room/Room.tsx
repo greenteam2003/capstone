@@ -4,7 +4,7 @@ import { styled } from '@material-ui/core/styles';
 // import MainParticipant from '../MainParticipant/MainParticipant';
 import Canvas from '../Canvas';
 import { useList, useObjectVal } from 'react-firebase-hooks/database';
-import { db } from '../firebase.js';
+import { db } from '../../firebase.js';
 const Container = styled('div')(({ theme }) => ({
   position: 'relative',
   height: '100%',

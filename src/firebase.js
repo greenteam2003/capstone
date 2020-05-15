@@ -1,5 +1,5 @@
 import * as firebase from 'firebase';
-const config = {
+var config = {
   apiKey: 'AIzaSyAkB0IcCczv1WaEkvzSigwEVBfoEDPHQLw',
   authDomain: 'grouphang-258f0.firebaseapp.com',
   databaseURL: 'https://grouphang-258f0.firebaseio.com',
