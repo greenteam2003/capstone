@@ -46,46 +46,49 @@ export default function ParticipantStrip() {
   const [helloPosition, setHelloPosition] = useState(position);
   const [localPosition, setLocalPosition] = useState(room ? room[localParticipant.identity].position : position);
   // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
+  const [ourParticipant, setOurParticipant] = useState(selectedParticipant);
+
+  ///our selected participan tshould always be either the previous selected partiicpant,
+  ///or the new selected partiicpant, never null
+
+  useEffect(() => {
+    if (selectedParticipant) {
+      setOurParticipant(selectedParticipant);
+    }
+  });
 
   function onStartDrag(e, position) {
     e.preventDefault();
-    console.log('event', e.target);
-    console.log('SElected Participant', selectedParticipant);
-    setLocalPosition(position);
+    if (ourParticipant) {
+      console.log('ourParticipant in start', ourParticipant);
+      if (ourParticipant.identity === localParticipant.identity) {
+        setLocalPosition(position);
+      } else {
+        console.log('test');
+      }
+    }
   }
 
-  // function onStartRemoteDrag(e, position) {
-  //   e.preventDefault();
-  //   if(selectedParticipant){
-  //      var updated = {
-  //     selectedParticipant.identity: {
-  //       name: selectedParticipant.identity,
-  //       position: position
-  //     }
-  //   }
-  //    setRoom(prevRoom=>{
-  //     return {...prevRoom, ...updated}
-  //   })
-  //   }
-
-  // }
   function handleDragStop(e, position) {
     e.preventDefault();
+    console.log('ourParticipant in stop', ourParticipant);
+
     console.log('STOP');
     console.log('position X', position.x);
     console.log('position y', position.y);
 
     const newPosition = { x: position.x, y: position.y };
+    ////works every other time
 
-    ///set
-    db.ref(`roomId/${localParticipant.identity}/position`).set(newPosition);
+    if (ourParticipant) {
+      console.log('handling drag stop');
+      db.ref(`roomId/${ourParticipant.identity}/position`).set(newPosition);
+    }
 
     // send to firebase
   }
-  console.log('Local', localParticipant);
-  console.log('Remote', participants);
-  console.log('room', room);
-  console.log('Position', position);
+  console.log('selectedParticipant', selectedParticipant);
+
   return (
     // <Container>
     //   <ScrollContainer>
@@ -109,7 +112,7 @@ export default function ParticipantStrip() {
         //   <div className={participant.identity} />
         <Draggable
           position={room ? room[participant.identity].position : position}
-          onDrag={/*onStartRemoteDrag*/ onStartDrag}
+          onDrag={onStartDrag}
           onStop={handleDragStop}
         >
           <div style={{ width: '300px', height: '200px' }}>
