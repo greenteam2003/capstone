@@ -59,6 +59,7 @@ export default function ParticipantStrip() {
 
   function onStartDrag(e, position) {
     e.preventDefault();
+    console.log(e.target.firstChild.innerText);
     if (ourParticipant) {
       console.log('ourParticipant in start', ourParticipant);
       if (ourParticipant.identity === localParticipant.identity) {
@@ -71,19 +72,13 @@ export default function ParticipantStrip() {
 
   function handleDragStop(e, position) {
     e.preventDefault();
-    console.log('ourParticipant in stop', ourParticipant);
 
-    console.log('STOP');
-    console.log('position X', position.x);
-    console.log('position y', position.y);
+    const participant = e.target.firstChild.innerText;
 
     const newPosition = { x: position.x, y: position.y };
     ////works every other time
 
-    if (ourParticipant) {
-      console.log('handling drag stop');
-      db.ref(`roomId/${ourParticipant.identity}/position`).set(newPosition);
-    }
+    db.ref(`roomId/${participant}/position`).set(newPosition);
 
     // send to firebase
   }
