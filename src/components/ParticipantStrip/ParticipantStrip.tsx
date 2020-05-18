@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Participant from '../Participant/Participant';
 import { styled } from '@material-ui/core/styles';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
@@ -7,77 +7,127 @@ import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useS
 import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
+import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 
-const Container = styled('div')(({ theme }) => ({
-  padding: '0.5em',
-  overflowY: 'auto',
-  [theme.breakpoints.down('xs')]: {
-    overflowY: 'initial',
-    overflowX: 'auto',
-    padding: 0,
-    display: 'flex',
-  },
-}));
+// const Container = styled('div')(({ theme }) => ({
+//   padding: '0.5em',
+//   overflowY: 'auto',
+//   [theme.breakpoints.down('xs')]: {
+//     overflowY: 'initial',
+//     overflowX: 'auto',
+//     padding: 0,
+//     display: 'flex',
+//   },
+// }));
 
-const ScrollContainer = styled('div')(({ theme }) => ({
-  [theme.breakpoints.down('xs')]: {
-    display: 'flex',
-  },
-}));
+// const ScrollContainer = styled('div')(({ theme }) => ({
+//   [theme.breakpoints.down('xs')]: {
+//     display: 'flex',
+//   },
+// }));
 
 export default function ParticipantStrip() {
-  const [position] = useObjectVal<ControlPosition>(db.ref('participants/position'));
+  const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
 
-  const [helloPosition, setHelloPosition] = useState(position);
-  const {
-    room: { localParticipant },
-  } = useVideoContext();
+  const { room } = useVideoContext();
+  const localParticipant = room.localParticipant;
+  const roomName = room.name;
+  const [dbRoom] = useObjectVal(db.ref('/' + roomName));
+
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
+  // const [ localPosition, setLocalPosition ] = useState(
+  // 	dbRoom ? dbRoom[localParticipant.identity].position : position
+  // );
+  // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
+  const [ourParticipant, setOurParticipant] = useState(selectedParticipant);
+
+  ///our selected participan tshould always be either the previous selected partiicpant,
+  ///or the new selected partiicpant, never null
+
+  useEffect(() => {
+    if (selectedParticipant) {
+      setOurParticipant(selectedParticipant);
+    }
+  });
+
   function onStartDrag(e, position) {
     e.preventDefault();
-    setHelloPosition(position);
+
+    if (ourParticipant) {
+      if (ourParticipant.identity === localParticipant.identity) {
+        console.log('hmm');
+      } else {
+        console.log('test');
+      }
+    }
   }
-  function handleDragStop(e, position) {
+
+  function handleDragStop(e, localPosition) {
+    console.log('localPosition', localPosition);
     e.preventDefault();
-    console.log('STOP');
-    console.log('position X', position.x);
-    console.log('position y', position.y);
+    console.log('target', e.target);
+    // console.log('H4?', e.target.getElementsByTagName('h4'));
+    const participant = e.target.getElementsByTagName('h4')[0].innerText;
+    console.log('participant', participant);
+    // console.log('room', roomName);
+    // console.log('localPosition', localPosition);
+    // console.log('DBROOM', dbRoom);
+    const newPosition = { x: localPosition.x, y: localPosition.y };
 
-    const newPosition = { x: position.x, y: position.y };
+    db.ref(`${roomName}/${participant}/position`).set(newPosition);
 
-    ///set
-    db.ref('participants').set(newPosition);
+    console.log();
 
     // send to firebase
   }
-
+  let initialPosition = { x: 0, y: 0 };
   return (
     // <Container>
     //   <ScrollContainer>
-    <div>
-      <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
+    <div
+      style={{
+        backgroundImage:
+          'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+        backgroundSize: `100%`,
+      }}
+    >
+      <Draggable
+        position={
+          dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
+        }
+        onDrag={onStartDrag}
+        onStop={handleDragStop}
+      >
         <div style={{ width: '300px', height: '200px' }}>
           <Participant
             key={localParticipant.sid}
             participant={localParticipant}
             isSelected={selectedParticipant === localParticipant}
-            // onClick={() => setSelectedParticipant(participant)}
+            onClick={() => setSelectedParticipant(localParticipant)}
           />
         </div>
       </Draggable>
       {participants.map(participant => (
-        <Draggable position={position} onDrag={onStartDrag} onStop={handleDragStop}>
-          <div style={{ width: '300px', height: '200px' }}>
-            <Participant
-              key={participant.sid}
-              participant={participant}
-              isSelected={selectedParticipant === participant}
-              // onClick={() => setSelectedParticipant(participant)}
-            />
-          </div>
-        </Draggable>
+        <div>
+          <div className={participant.identity} />
+          <Draggable
+            position={dbRoom ? dbRoom[participant.identity].position : position}
+            onDrag={onStartDrag}
+            onStop={handleDragStop}
+          >
+            <div style={{ width: '300px', height: '200px' }}>
+              <Participant
+                key={participant.sid}
+                participant={participant}
+                isSelected={selectedParticipant === participant}
+                onClick={() => setSelectedParticipant(participant)}
+              />
+            </div>
+          </Draggable>
+          //{' '}
+        </div>
       ))}
     </div>
     //   </ScrollContainer>
@@ -86,25 +136,3 @@ export default function ParticipantStrip() {
 }
 
 // const { error, setError } = useAppState();
-
-// return (
-//   <Stage>
-//     <Layer>
-//       <VideoProvider options={connectionOptions} onError={setError}>
-//         <Participant
-//           participant={localParticipant}
-//           isSelected={selectedParticipant === localParticipant}
-//           onClick={() => setSelectedParticipant(localParticipant)}
-//         />
-//         {participants.map(participant => (
-//           <Participant
-//             key={participant.sid}
-//             participant={participant}
-//             isSelected={selectedParticipant === participant}
-//             onClick={() => setSelectedParticipant(participant)}
-//           />
-//         ))}
-//       </VideoProvider>
-//     </Layer>
-//   </Stage>
-// );

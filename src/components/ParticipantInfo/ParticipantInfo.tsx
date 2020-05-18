@@ -75,11 +75,11 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ParticipantInfoProps {
   participant: Participant;
   children: React.ReactNode;
-  // onClick: () => void;
+  onClick: () => void;
   isSelected: boolean;
 }
 
-export default function ParticipantInfo({ participant, /*onClick,*/ isSelected, children }: ParticipantInfoProps) {
+export default function ParticipantInfo({ participant, onClick, isSelected, children }: ParticipantInfoProps) {
   const publications = usePublications(participant);
 
   const audioPublication = publications.find(p => p.kind === 'audio');
@@ -101,7 +101,7 @@ export default function ParticipantInfo({ participant, /*onClick,*/ isSelected, 
       className={clsx(classes.container, {
         [classes.isVideoSwitchedOff]: isVideoSwitchedOff,
       })}
-      /*onClick={onClick}*/
+      onClick={onClick}
       data-cy-participant={participant.identity}
     >
       <div className={clsx(classes.infoContainer, { [classes.hideVideo]: !isVideoEnabled })}>
