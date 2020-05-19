@@ -46,11 +46,11 @@ export default function ParticipantStrip() {
   ///our selected participan tshould always be either the previous selected partiicpant,
   ///or the new selected partiicpant, never null
 
-  useEffect(() => {
-    if (selectedParticipant) {
-      setOurParticipant(selectedParticipant);
-    }
-  });
+  // useEffect(() => {
+  //   if (selectedParticipant) {
+  //     setOurParticipant(selectedParticipant);
+  //   }
+  // });
 
   function onStartDrag(e, position) {
     e.preventDefault();
@@ -65,6 +65,7 @@ export default function ParticipantStrip() {
   }
 
   function handleDragStop(e, localPosition) {
+    console.log('new log in handlestop');
     console.log('localPosition', localPosition);
     e.preventDefault();
     console.log('target', e.target);
@@ -78,14 +79,16 @@ export default function ParticipantStrip() {
 
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
 
-    console.log();
+    console.log('johns position', localPosition);
 
     // send to firebase
+    ///
   }
   let initialPosition = { x: 0, y: 0 };
   return (
     // <Container>
     //   <ScrollContainer>
+    ///check out transpotion of x and y values
     <div
       style={{
         backgroundImage:
@@ -93,14 +96,16 @@ export default function ParticipantStrip() {
         backgroundSize: `100%`,
       }}
     >
+      ///
       <Draggable
         position={
           dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
+        grid={[3, 3]}
       >
-        <div style={{ width: '300px', height: '200px' }}>
+        <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
           <Participant
             key={localParticipant.sid}
             participant={localParticipant}
@@ -110,24 +115,26 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        <div>
-          <div className={participant.identity} />
-          <Draggable
-            position={dbRoom ? dbRoom[participant.identity].position : position}
-            onDrag={onStartDrag}
-            onStop={handleDragStop}
-          >
-            <div style={{ width: '300px', height: '200px' }}>
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                isSelected={selectedParticipant === participant}
-                onClick={() => setSelectedParticipant(participant)}
-              />
-            </div>
-          </Draggable>
-          //{' '}
-        </div>
+        ///how is it achieving that absolute position?
+        ///absolutely relative to what?
+        //anything above it WITH A POSITION
+
+        <Draggable
+          key={participant.identity}
+          position={dbRoom ? dbRoom[participant.identity].position : position}
+          onDrag={onStartDrag}
+          onStop={handleDragStop}
+        >
+          <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
+            <Participant
+              key={participant.sid}
+              participant={participant}
+              isSelected={selectedParticipant === participant}
+              onClick={() => setSelectedParticipant(participant)}
+            />
+          </div>
+        </Draggable>
+        //{' '}
       ))}
     </div>
     //   </ScrollContainer>
