@@ -85,10 +85,10 @@ export default function ParticipantStrip() {
     setBackground(e.value);
   }
   let initialPosition = { x: 0, y: 0 };
-  const defaultOption = 'zero';
+  const defaultOption = 'Where you wanna go?';
   const [options] = useState([
     {
-      label: 'BadaBing',
+      label: 'Bada Bing',
       value: 'url(https://melmagazine.com/wp-content/uploads/2019/01/badabing-1280x533.jpg)',
     },
     {
@@ -106,6 +106,9 @@ export default function ParticipantStrip() {
         'url(https://previews.123rf.com/images/gmast3r/gmast3r1709/gmast3r170901279/85853167-young-people-group-tropical-beach-palm-trees-friends-walking-speaking-holiday-sea-summer-vacation-oc.jpg)',
     },
   ]);
+  function menuStop() {
+    console.log('hey');
+  }
   return (
     // <Container>
     //   <ScrollContainer>
@@ -117,13 +120,8 @@ export default function ParticipantStrip() {
       }}
     >
       ///
-      <div>
-        <Dropdown
-          options={options}
-          value={defaultOption}
-          placeholder="Where you wanna go?"
-          onChange={changeBackground}
-        />
+      <div style={{ width: '300px', position: 'absolute', top: 0, left: window.innerWidth - 300 }}>
+        <Dropdown options={options} value={defaultOption} placeholder="TEST" onChange={changeBackground} />
       </div>
       <Draggable
         position={
