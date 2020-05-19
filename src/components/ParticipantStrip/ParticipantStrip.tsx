@@ -8,6 +8,8 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 
 // const Container = styled('div')(({ theme }) => ({
 //   padding: '0.5em',
@@ -37,11 +39,14 @@ export default function ParticipantStrip() {
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
+  const [background, setBackground] = useState(
+    'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)'
+  );
+
   // const [ localPosition, setLocalPosition ] = useState(
   // 	dbRoom ? dbRoom[localParticipant.identity].position : position
   // );
   // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
-  const [ourParticipant, setOurParticipant] = useState(selectedParticipant);
 
   ///our selected participan tshould always be either the previous selected partiicpant,
   ///or the new selected partiicpant, never null
@@ -54,14 +59,6 @@ export default function ParticipantStrip() {
 
   function onStartDrag(e, position) {
     e.preventDefault();
-
-    if (ourParticipant) {
-      if (ourParticipant.identity === localParticipant.identity) {
-        console.log('hmm');
-      } else {
-        console.log('test');
-      }
-    }
   }
 
   function handleDragStop(e, localPosition) {
@@ -79,24 +76,50 @@ export default function ParticipantStrip() {
 
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
 
-    console.log('johns position', localPosition);
-
     // send to firebase
     ///
   }
+  function changeBackground(e) {
+    console.log('event', e);
+    console.log('e.value', e.value);
+    setBackground(e.value);
+  }
   let initialPosition = { x: 0, y: 0 };
+  const defaultOption = 'zero';
+  const [options] = useState([
+    {
+      label: 'BadaBing',
+      value: 'url(https://melmagazine.com/wp-content/uploads/2019/01/badabing-1280x533.jpg)',
+    },
+    {
+      label: 'BBQ',
+      value: 'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+    },
+    {
+      label: 'European getaway',
+      value:
+        'url(https://c8.alamy.com/comp/G24JXH/summer-holidays-vacation-happy-people-concept-group-of-friends-jumping-G24JXH.jpg)',
+    },
+    {
+      label: 'Summer vibes',
+      value:
+        'url(https://previews.123rf.com/images/gmast3r/gmast3r1709/gmast3r170901279/85853167-young-people-group-tropical-beach-palm-trees-friends-walking-speaking-holiday-sea-summer-vacation-oc.jpg)',
+    },
+  ]);
   return (
     // <Container>
     //   <ScrollContainer>
     ///check out transpotion of x and y values
     <div
       style={{
-        backgroundImage:
-          'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+        backgroundImage: background,
         backgroundSize: `100%`,
       }}
     >
       ///
+      <div>
+        <Dropdown options={options} value={defaultOption} placeholder="Select an option" onChange={changeBackground} />
+      </div>
       <Draggable
         position={
           dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
