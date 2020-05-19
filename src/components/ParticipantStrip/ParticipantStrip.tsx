@@ -103,6 +103,8 @@ export default function ParticipantStrip() {
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
+        bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
+        ///height of the draggable area minus height of the navigation bar
       >
         <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
           <Participant
