@@ -90,8 +90,8 @@ class Canvas extends React.Component {
         computeFrame();
       }
       function computeFrame() {
-        console.log('computing frames but for how long?');
-        console.log('video in compute frame', video);
+        // console.log('computing frames but for how long?');
+        // console.log('video in compute frame', video);
         //drawImage(image, dx, dy, dWidth, dHeight, )
         //image: element to draw into the canvas context
         //dx: x coordinate where to place top left corner of source image in the destination canvas
@@ -109,7 +109,10 @@ class Canvas extends React.Component {
           let out_image = ctx_out.getImageData(0, 0, video.videoWidth, video.videoHeight);
           //ctx.getImageData(sx, sy, sw, sh)
           //sx: x-coordinate of from top-left corner from which ImageData will be extracted
-          //sw: width or rectangle from which Image Data will be extrated
+          //sw: width or rectangle from which Image Data will be extracted
+          console.log('SEGMENTATION', segmentation);
+          console.log('Frame Data', frame.data);
+          console.log('Out IMAGE', out_image);
           for (let x = 0; x < video.videoWidth; x++) {
             for (let y = 0; y < video.videoHeight; y++) {
               //n = each pixel
@@ -120,7 +123,25 @@ class Canvas extends React.Component {
                 out_image.data[n * 4 + 1] = frame.data[n * 4 + 1]; //G
                 out_image.data[n * 4 + 2] = frame.data[n * 4 + 2]; //B
                 out_image.data[n * 4 + 3] = frame.data[n * 4 + 3]; //A
+              } else {
+                out_image.data[n * 4] = 0; //R
+                out_image.data[n * 4 + 1] = 255; //G
+                out_image.data[n * 4 + 2] = 0; //B
+                out_image.data[n * 4 + 3] = 255; //A
               }
+
+              // if (segmentation.data[n] == 1) {
+              //   out_image.data[n * 4] = frame.data[n * 4]; //R
+              //   out_image.data[n * 4 + 1] = frame.data[n * 4 + 1]; //G
+              //   out_image.data[n * 4 + 2] = frame.data[n * 4 + 2]; //B
+              //   out_image.data[n * 4 + 3] = frame.data[n * 4 + 3]; //A
+              // } else {
+              //   // we want to set the zeros to an abnormal color
+              //   out_image.data[n * 4] = 0; //R
+              //   out_image.data[n * 4 + 1] = 255; //G
+              //   out_image.data[n * 4 + 2] = 0; //B
+              //   out_image.data[n * 4 + 3] = 0; //A
+              // }
             }
           }
 
