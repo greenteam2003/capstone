@@ -118,7 +118,12 @@ export default function ParticipantStrip() {
     >
       ///
       <div>
-        <Dropdown options={options} value={defaultOption} placeholder="Select an option" onChange={changeBackground} />
+        <Dropdown
+          options={options}
+          value={defaultOption}
+          placeholder="Where you wanna go?"
+          onChange={changeBackground}
+        />
       </div>
       <Draggable
         position={
