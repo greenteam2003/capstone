@@ -106,8 +106,8 @@ export default function ParticipantStrip() {
         'url(https://previews.123rf.com/images/gmast3r/gmast3r1709/gmast3r170901279/85853167-young-people-group-tropical-beach-palm-trees-friends-walking-speaking-holiday-sea-summer-vacation-oc.jpg)',
     },
   ]);
-  function menuStop() {
-    console.log('hey');
+  function handleImageUpload(e) {
+    console.log('imageEvent', e);
   }
   return (
     // <Container>
@@ -120,6 +120,16 @@ export default function ParticipantStrip() {
       }}
     >
       ///
+      <div style={{ width: '300px', height: '200px', position: 'absolute', top: 200, left: 0 }}>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={e => handleImageUpload(e)}
+          multiple={false}
+          id="avatar"
+          name="avatar"
+        />
+      </div>
       <div style={{ width: '300px', position: 'absolute', top: 0, left: window.innerWidth - 300 }}>
         <Dropdown options={options} value={defaultOption} placeholder="TEST" onChange={changeBackground} />
       </div>
