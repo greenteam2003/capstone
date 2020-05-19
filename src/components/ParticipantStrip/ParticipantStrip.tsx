@@ -125,6 +125,7 @@ export default function ParticipantStrip() {
           position={dbRoom ? dbRoom[participant.identity].position : position}
           onDrag={onStartDrag}
           onStop={handleDragStop}
+          bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
         >
           <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
             <Participant
