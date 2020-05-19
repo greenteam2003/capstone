@@ -103,7 +103,6 @@ export default function ParticipantStrip() {
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
-        grid={[3, 3]}
       >
         <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
           <Participant
