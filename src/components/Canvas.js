@@ -1,5 +1,9 @@
 // import Konva from 'konva';
 import React from 'react';
+import { LocalVideoTrack } from 'twilio-video';
+import { useCallback } from 'react';
+import useVideoContext from '../hooks/useVideoContext/useVideoContext';
+
 // import { Stage, Layer, Circle } from 'react-konva';
 
 const bodyPix = require('@tensorflow-models/body-pix');
@@ -21,14 +25,24 @@ class Canvas extends React.Component {
     this.setState({
       _isMounted: true,
     });
+    this.startCam();
   }
 
   componentWillUnmount() {
     this.setState({
       _isMounted: false,
     });
+    this.stopCam();
   }
+  localVideo() {
+    const {
+      room: { localParticipant },
+      localTracks,
+      getLocalVideoTrack,
+    } = useVideoContext();
 
+    const videoTrack = localTracks.find(track => track.kind.includes('video'));
+  }
   startCam() {
     var video = document.getElementById('video');
     if (navigator.mediaDevices.getUserMedia) {
@@ -158,7 +172,6 @@ class Canvas extends React.Component {
   // }
 
   render() {
-    console.log('PROPS', this.props);
     if (!navigator.mediaDevices.getUserMedia) {
       return <h2>Loading...</h2>;
     }
@@ -166,11 +179,7 @@ class Canvas extends React.Component {
       <div>
         <div id="container">
           <video autoPlay={true} id="video" width="50" height="30" hidden />
-          <div className="buttons">
-            <button onClick={this.startCam}>START</button>
-            <button onClick={this.stopCam}>STOP</button>
-            <button onClick={this.segmentAndMask}>SEGMENT</button>
-          </div>
+          <div className="buttons" />
           <hr />
           {/* OUTPUT CANVAS */}
           <canvas id="output-canvas" hidden />
