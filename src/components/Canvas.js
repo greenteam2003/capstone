@@ -34,15 +34,6 @@ class Canvas extends React.Component {
     });
     this.stopCam();
   }
-  localVideo() {
-    const {
-      room: { localParticipant },
-      localTracks,
-      getLocalVideoTrack,
-    } = useVideoContext();
-
-    const videoTrack = localTracks.find(track => track.kind.includes('video'));
-  }
   startCam() {
     var video = document.getElementById('video');
     if (navigator.mediaDevices.getUserMedia) {
