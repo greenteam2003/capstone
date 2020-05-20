@@ -73,7 +73,6 @@ export default function ParticipantStrip() {
   }
   function changeBackground(e) {
     const newBackground = e.value;
-    const newLabel = e.label;
     db.ref(`${roomName}/background`).set(newBackground);
     setBackground(newBackground);
   }
@@ -116,13 +115,12 @@ export default function ParticipantStrip() {
     // <Container>
     //   <ScrollContainer>
     ///check out transpotion of x and y values
-    <div>
-      <div
-        style={{
-          backgroundImage: currentBackground,
-          backgroundSize: `100%`,
-        }}
-      />
+    <div
+      style={{
+        backgroundImage: currentBackground,
+        backgroundSize: `100%`,
+      }}
+    >
       <div style={{ width: '300px', height: '200px', position: 'absolute', top: 200, left: 0 }}>
         <input
           type="file"
