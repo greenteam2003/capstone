@@ -112,12 +112,13 @@ export default function ParticipantInfo({ participant, onClick, isSelected, chil
           </h4>
           <NetworkQualityLevel qualityLevel={networkQualityLevel} />
         </div>
-        <div>
+        {/* uncomment for pins inside of video */}
+        {/* <div>
           <AudioLevelIndicator audioTrack={audioTrack} background="white" />
           {!isVideoEnabled && <VideocamOff />}
           {isScreenShareEnabled && <ScreenShare />}
           {isSelected && <PinIcon />}
-        </div>
+        </div> */}
       </div>
       {isVideoSwitchedOff && <BandwidthWarning />}
       {children}

@@ -1,4 +1,3 @@
-// import Konva from 'konva';
 import React from 'react';
 import ToggleVideoButton from '../components/Controls/ToggleVideoButton/ToggleVideoButton';
 
