@@ -33,7 +33,25 @@ export default function App() {
     <Container style={{ height }}>
       <MenuBar />
       <Main>
-        {roomState === 'disconnected' ? <LocalVideoPreview /> : <Room />}
+        {roomState === 'disconnected' ? (
+          <div>
+            <LocalVideoPreview />
+            <div
+              style={{
+                width: '600px',
+                position: 'absolute',
+                top: window.innerHeight / 3,
+                right: 400,
+              }}
+            >
+              <h2>
+                Welcome to groupHang. Enter your room code to join your friends, or make your own to create a room
+              </h2>
+            </div>
+          </div>
+        ) : (
+          <Room />
+        )}
         <Controls />
       </Main>
       <ReconnectingNotification />

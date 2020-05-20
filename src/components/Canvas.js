@@ -41,6 +41,9 @@ class Canvas extends React.Component {
           console.log('Turning on CAM');
           this.setState({ camOn: true });
         })
+        .then(() => {
+          this.segmentAndMask();
+        })
         .catch(function(err0r) {
           console.log('Something went wrong!', err0r);
         });
