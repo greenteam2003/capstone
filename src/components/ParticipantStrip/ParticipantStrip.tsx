@@ -74,14 +74,10 @@ export default function ParticipantStrip() {
   function changeBackground(e) {
     const newBackground = e.value;
     db.ref(`${roomName}/background`).set(newBackground);
-    setBackground(newBackground);
+    // setBackground(newBackground);
   }
   let initialPosition = { x: 0, y: 0 };
-  // let initialBackground = background;
-  // background
-  // ? (initialBackground = background)
-  // : (initialBackground =
-  //     'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)');
+
   // const defaultOption = 'Where you wanna go?';
   const [options] = useState([
     {
@@ -107,14 +103,11 @@ export default function ParticipantStrip() {
     console.log('imageEvent', e);
   }
 
-  // {
-  //   dbRoom && dbRoom[background] ? setBackground(dbRoom[background].background) : setBackground(background);
-  // }
-  // dbRoom && dbRoom[background] ? dbRoom[background].background : initialBackground
   return (
     // <Container>
     //   <ScrollContainer>
     ///check out transpotion of x and y values
+
     <div
       style={{
         backgroundImage: currentBackground,
