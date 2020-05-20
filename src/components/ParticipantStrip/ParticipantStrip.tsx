@@ -117,7 +117,7 @@ export default function ParticipantStrip() {
             onDrag={onStartDrag}
             onStop={handleDragStop}
           >
-            <div style={{ width: '300px', height: '200px' }}>
+            <div style={{ width: '640px', height: '480px' }}>
               <Participant
                 key={participant.sid}
                 participant={participant}
@@ -126,7 +126,6 @@ export default function ParticipantStrip() {
               />
             </div>
           </Draggable>
-          //{' '}
         </div>
       ))}
     </div>
