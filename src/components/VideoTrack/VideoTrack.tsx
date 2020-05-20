@@ -145,6 +145,7 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
         // console.log('OUT_IMAGE', out_image);
         //will later draw modified frame here
         cctx.putImageData(out_image, 0, 0);
+        // cctx.scale(0.5, 0.5);
       }
       if (stopLoop === false) {
         requestAnimationFrame(drawVideo);

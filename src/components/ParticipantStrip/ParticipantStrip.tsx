@@ -8,6 +8,7 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
+import { Rnd } from 'react-rnd';
 
 // const Container = styled('div')(({ theme }) => ({
 //   padding: '0.5em',
@@ -93,12 +94,12 @@ export default function ParticipantStrip() {
         backgroundSize: `100%`,
       }}
     >
-      <Draggable
+      <Rnd
         position={
           dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
         }
         onDrag={onStartDrag}
-        onStop={handleDragStop}
+        onDragStop={handleDragStop}
       >
         <div style={{ width: '640px', height: '480px' }}>
           <Participant
@@ -108,14 +109,14 @@ export default function ParticipantStrip() {
             onClick={() => setSelectedParticipant(localParticipant)}
           />
         </div>
-      </Draggable>
+      </Rnd>
       {participants.map(participant => (
         <div>
           <div className={participant.identity} />
-          <Draggable
+          <Rnd
             position={dbRoom ? dbRoom[participant.identity].position : position}
             onDrag={onStartDrag}
-            onStop={handleDragStop}
+            onDragStop={handleDragStop}
           >
             <div style={{ width: '640px', height: '480px' }}>
               <Participant
@@ -125,7 +126,7 @@ export default function ParticipantStrip() {
                 onClick={() => setSelectedParticipant(participant)}
               />
             </div>
-          </Draggable>
+          </Rnd>
         </div>
       ))}
     </div>
