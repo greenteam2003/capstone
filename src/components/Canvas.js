@@ -1,13 +1,10 @@
 // import Konva from 'konva';
 import React from 'react';
-import { LocalVideoTrack } from 'twilio-video';
-import { useCallback } from 'react';
-import useVideoContext from '../hooks/useVideoContext/useVideoContext';
+import ToggleVideoButton from '../components/Controls/ToggleVideoButton/ToggleVideoButton';
 
 // import { Stage, Layer, Circle } from 'react-konva';
 
 const bodyPix = require('@tensorflow-models/body-pix');
-// import regeneratorRuntime from 'regenerator-runtime';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -98,14 +95,6 @@ class Canvas extends React.Component {
         computeFrame();
       }
       function computeFrame() {
-        console.log('computing frames but for how long?');
-        console.log('video in compute frame', video);
-        //drawImage(image, dx, dy, dWidth, dHeight, )
-        //image: element to draw into the canvas context
-        //dx: x coordinate where to place top left corner of source image in the destination canvas
-        //dWidth: width to draw the image in the destination canvas: allowing for scaling; default: won't scale image
-
-        //Draws the video into the intial canvas
         ctx_tmp.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         //getImageData returns the imageData for the part of the inital canvas that is specified (ie. the whole canvas)
         let frame = ctx_tmp.getImageData(0, 0, video.videoWidth, video.videoHeight);
@@ -146,7 +135,6 @@ class Canvas extends React.Component {
         init();
       });
     } else {
-      console.log('Please turn on the camera first!');
     }
   }
   // continuouslySegmentAndMask() {

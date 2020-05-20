@@ -10,23 +10,7 @@ import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-
-// const Container = styled('div')(({ theme }) => ({
-//   padding: '0.5em',
-//   overflowY: 'auto',
-//   [theme.breakpoints.down('xs')]: {
-//     overflowY: 'initial',
-//     overflowX: 'auto',
-//     padding: 0,
-//     display: 'flex',
-//   },
-// }));
-
-// const ScrollContainer = styled('div')(({ theme }) => ({
-//   [theme.breakpoints.down('xs')]: {
-//     display: 'flex',
-//   },
-// }));
+import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
@@ -119,17 +103,6 @@ export default function ParticipantStrip() {
         backgroundSize: `100%`,
       }}
     >
-      ///
-      <div style={{ width: '300px', height: '200px', position: 'absolute', top: 200, left: 0 }}>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e => handleImageUpload(e)}
-          multiple={false}
-          id="avatar"
-          name="avatar"
-        />
-      </div>
       <div style={{ width: '300px', position: 'absolute', top: 0, left: window.innerWidth - 300 }}>
         <Dropdown options={options} value={defaultOption} placeholder="TEST" onChange={changeBackground} />
       </div>
