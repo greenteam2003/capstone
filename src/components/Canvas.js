@@ -100,7 +100,9 @@ class Canvas extends React.Component {
         //Draws the video into the intial canvas
         ctx_tmp.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         //getImageData returns the imageData for the part of the inital canvas that is specified (ie. the whole canvas)
+
         let frame = ctx_tmp.getImageData(0, 0, video.videoWidth, video.videoHeight);
+
         //same as when we do net.segmentPerson
         //they pass in the canvas with the video drawn into it
         //then they get the imageData for the blank output canvas
@@ -110,9 +112,7 @@ class Canvas extends React.Component {
           //ctx.getImageData(sx, sy, sw, sh)
           //sx: x-coordinate of from top-left corner from which ImageData will be extracted
           //sw: width or rectangle from which Image Data will be extracted
-          console.log('SEGMENTATION', segmentation);
-          console.log('Frame Data', frame.data);
-          console.log('Out IMAGE', out_image);
+
           for (let x = 0; x < video.videoWidth; x++) {
             for (let y = 0; y < video.videoHeight; y++) {
               //n = each pixel
@@ -129,19 +129,6 @@ class Canvas extends React.Component {
                 out_image.data[n * 4 + 2] = 0; //B
                 out_image.data[n * 4 + 3] = 255; //A
               }
-
-              // if (segmentation.data[n] == 1) {
-              //   out_image.data[n * 4] = frame.data[n * 4]; //R
-              //   out_image.data[n * 4 + 1] = frame.data[n * 4 + 1]; //G
-              //   out_image.data[n * 4 + 2] = frame.data[n * 4 + 2]; //B
-              //   out_image.data[n * 4 + 3] = frame.data[n * 4 + 3]; //A
-              // } else {
-              //   // we want to set the zeros to an abnormal color
-              //   out_image.data[n * 4] = 0; //R
-              //   out_image.data[n * 4 + 1] = 255; //G
-              //   out_image.data[n * 4 + 2] = 0; //B
-              //   out_image.data[n * 4 + 3] = 0; //A
-              // }
             }
           }
 
@@ -149,7 +136,9 @@ class Canvas extends React.Component {
           //imageData: ImageData obj with array of pixel values
           //dx: x-coordinate where to put the imagedata in the destination canvas; destination canvas being: ctx_out
           ctx_out.putImageData(out_image, 0, 0);
-          setTimeout(computeFrame, 0);
+          // setTimeout(computeFrame, 0);
+          //getAnimationFrame(computeFrame)
+          requestIdleCallback(computeFrame);
         });
       }
 
@@ -197,47 +186,5 @@ class Canvas extends React.Component {
     );
   }
 }
-
-// class Canvas extends React.Component {
-// 	componentDidMount() {}
-
-// 	render() {
-// 		// const stage = new Konva.Stage({
-// 		// 	container: 'container',
-// 		// 	width: 500,
-// 		// 	height: 500,
-// 		// });
-// 		// const layer = new Konva.Layer();
-
-// 		// const circle = new Konva.Circle({
-// 		// 	x: stage.width / 4,
-// 		// 	y: stage.height / 2,
-// 		// 	radius: 50,
-// 		// 	fill: 'blue',
-// 		// 	stroke: 'black',
-// 		// 	strokeWidth: 3,
-// 		// });
-
-// 		// layer.add(circle);
-// 		// stage.add(layer);
-// 		// circle.on('click');
-
-// 		// const amplitude = stage.width / 2;
-// 		// const centerX = stage.width / 2;
-// 		// const period = 2000; // in ms
-
-// 		// const animation = new Konva.Animation(function(frame) {
-// 		// 	circle.x(amplitude * Math.sin((frame.time * 2 * Math.PI) / period) + centerX);
-// 		// }, layer);
-// 		// animation.start();
-// 		return (
-// 			<Stage width={500} height={500}>
-// 				<Layer>
-// 					<Circle x={100} y={100} width={50} height={50} fill="blue" stroke="black" draggable />
-// 				</Layer>
-// 			</Stage>
-// 		);
-// 	}
-// }
 
 export default Canvas;
