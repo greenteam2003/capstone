@@ -35,11 +35,12 @@ export default function ParticipantStrip() {
   const localParticipant = room.localParticipant;
   const roomName = room.name;
   const [dbRoom] = useObjectVal(db.ref('/' + roomName));
-
+  const [background] = useObjectVal(db.ref('/' + roomName + '/background')) as any;
+  console.log('background', background);
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
-  const [background, setBackground] = useState(
+  const [currentBackground, setBackground] = useState(
     'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)'
   );
 
@@ -51,41 +52,38 @@ export default function ParticipantStrip() {
   ///our selected participan tshould always be either the previous selected partiicpant,
   ///or the new selected partiicpant, never null
 
-  // useEffect(() => {
-  //   if (selectedParticipant) {
-  //     setOurParticipant(selectedParticipant);
-  //   }
-  // });
+  useEffect(() => {
+    if (background) {
+      setBackground(background);
+    }
+  });
 
   function onStartDrag(e, position) {
     e.preventDefault();
   }
 
   function handleDragStop(e, localPosition) {
-    console.log('new log in handlestop');
-    console.log('localPosition', localPosition);
     e.preventDefault();
-    console.log('target', e.target);
-    // console.log('H4?', e.target.getElementsByTagName('h4'));
+    //grabbing participants name
     const participant = e.target.getElementsByTagName('h4')[0].innerText;
-    console.log('participant', participant);
-    // console.log('room', roomName);
-    // console.log('localPosition', localPosition);
-    // console.log('DBROOM', dbRoom);
+
     const newPosition = { x: localPosition.x, y: localPosition.y };
-
+    // updating new position in firebase
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
-
-    // send to firebase
-    ///
   }
   function changeBackground(e) {
-    console.log('event', e);
-    console.log('e.value', e.value);
-    setBackground(e.value);
+    const newBackground = e.value;
+    const newLabel = e.label;
+    db.ref(`${roomName}/background`).set(newBackground);
+    setBackground(newBackground);
   }
   let initialPosition = { x: 0, y: 0 };
-  const defaultOption = 'Where you wanna go?';
+  // let initialBackground = background;
+  // background
+  // ? (initialBackground = background)
+  // : (initialBackground =
+  //     'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)');
+  // const defaultOption = 'Where you wanna go?';
   const [options] = useState([
     {
       label: 'Bada Bing',
@@ -109,17 +107,22 @@ export default function ParticipantStrip() {
   function handleImageUpload(e) {
     console.log('imageEvent', e);
   }
+
+  // {
+  //   dbRoom && dbRoom[background] ? setBackground(dbRoom[background].background) : setBackground(background);
+  // }
+  // dbRoom && dbRoom[background] ? dbRoom[background].background : initialBackground
   return (
     // <Container>
     //   <ScrollContainer>
     ///check out transpotion of x and y values
-    <div
-      style={{
-        backgroundImage: background,
-        backgroundSize: `100%`,
-      }}
-    >
-      ///
+    <div>
+      <div
+        style={{
+          backgroundImage: currentBackground,
+          backgroundSize: `100%`,
+        }}
+      />
       <div style={{ width: '300px', height: '200px', position: 'absolute', top: 200, left: 0 }}>
         <input
           type="file"
@@ -131,7 +134,7 @@ export default function ParticipantStrip() {
         />
       </div>
       <div style={{ width: '300px', position: 'absolute', top: 0, left: window.innerWidth - 300 }}>
-        <Dropdown options={options} value={defaultOption} placeholder="TEST" onChange={changeBackground} />
+        <Dropdown options={options} onChange={changeBackground} placeholder={'Where you wanna go?'} />
       </div>
       <Draggable
         position={
