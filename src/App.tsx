@@ -44,9 +44,7 @@ export default function App() {
                 right: 400,
               }}
             >
-              <h2>
-                Welcome to groupHang. Enter your room code to join your friends, or make your own to create a room
-              </h2>
+              <h2>Welcome to Gather. Enter your room code to join your friends, or make your own to create a room</h2>
             </div>
           </div>
         ) : (
