@@ -83,9 +83,6 @@ export default function ParticipantStrip() {
         'url(https://previews.123rf.com/images/gmast3r/gmast3r1709/gmast3r170901279/85853167-young-people-group-tropical-beach-palm-trees-friends-walking-speaking-holiday-sea-summer-vacation-oc.jpg)',
     },
   ]);
-  function handleImageUpload(e) {
-    console.log('imageEvent', e);
-  }
 
   return (
     <div
