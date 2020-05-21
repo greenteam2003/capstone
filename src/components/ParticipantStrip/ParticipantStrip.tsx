@@ -10,7 +10,6 @@ import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import useLocalVideoToggle from '../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
@@ -20,7 +19,7 @@ export default function ParticipantStrip() {
   const roomName = room.name;
   const [dbRoom] = useObjectVal(db.ref('/' + roomName));
   const [background] = useObjectVal(db.ref('/' + roomName + '/background')) as any;
-  console.log('background', background);
+
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
 
@@ -54,6 +53,7 @@ export default function ParticipantStrip() {
     const newPosition = { x: localPosition.x, y: localPosition.y };
     // updating new position in firebase
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
+
   }
   function changeBackground(e) {
     const newBackground = e.value;
@@ -88,10 +88,6 @@ export default function ParticipantStrip() {
   }
 
   return (
-    // <Container>
-    //   <ScrollContainer>
-    ///check out transpotion of x and y values
-
     <div
       style={{
         backgroundImage: currentBackground,
@@ -107,10 +103,11 @@ export default function ParticipantStrip() {
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
+        cancel="h4"
         bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
         ///height of the draggable area minus height of the navigation bar
       >
-        <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
+        <div style={{ width: '640px', height: '480px', position: 'absolute', top: 0, left: 0 }}>
           <Participant
             key={localParticipant.sid}
             participant={localParticipant}
@@ -120,6 +117,7 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
+
         ///how is it achieving that absolute position?
         ///absolutely relative to what?
         //anything above it WITH A POSITION
@@ -129,9 +127,10 @@ export default function ParticipantStrip() {
           position={dbRoom ? dbRoom[participant.identity].position : position}
           onDrag={onStartDrag}
           onStop={handleDragStop}
+          cancel="h4"
           bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
         >
-          <div style={{ width: '300px', height: '200px', position: 'absolute', top: 0, left: 0 }}>
+          <div style={{ width: '640px', height: '480px', position: 'absolute', top: 0, left: 0 }}>
             <Participant
               key={participant.sid}
               participant={participant}
@@ -140,12 +139,7 @@ export default function ParticipantStrip() {
             />
           </div>
         </Draggable>
-        //{' '}
       ))}
     </div>
-    //   </ScrollContainer>
-    // </Container>
   );
 }
-
-// const { error, setError } = useAppState();
