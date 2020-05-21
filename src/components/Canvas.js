@@ -1,7 +1,4 @@
-// import Konva from 'konva';
 import React from 'react';
-// import { Stage, Layer, Circle } from 'react-konva';
-
 const bodyPix = require('@tensorflow-models/body-pix');
 // import regeneratorRuntime from 'regenerator-runtime';
 
@@ -71,8 +68,8 @@ class Canvas extends React.Component {
       };
       const segmentationConfig = {
         internalResolution: 'high',
-        segmentationThreshold: 0.05,
-        scoreThreshold: 0.05,
+        segmentationThreshold: 0.3, //increase for tighter crop, based on probability pixel=person
+        scoreThreshold: 0.7,
       };
       function init() {
         video = document.getElementById('video');
