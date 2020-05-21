@@ -44,15 +44,19 @@ export default function ParticipantStrip() {
 
   function onStartDrag(e, position) {
     e.preventDefault();
+    console.log('event', e.target);
   }
 
   function handleDragStop(e, localPosition) {
     e.preventDefault();
+
     //grabbing participants name
+    console.log('event', e.target.getElementsByClassName('makeStyles-infoContainer-254 makeStyles-hideVideo-255'));
+
     const participant = e.target.getElementsByTagName('h4')[0].innerText;
 
     const newPosition = { x: localPosition.x, y: localPosition.y };
-    // updating new position in firebase
+
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
   }
   function changeBackground(e) {
@@ -107,6 +111,7 @@ export default function ParticipantStrip() {
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
+        cancel="h4"
         bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
         ///height of the draggable area minus height of the navigation bar
       >
@@ -127,6 +132,7 @@ export default function ParticipantStrip() {
         <Draggable
           key={participant.identity}
           position={dbRoom ? dbRoom[participant.identity].position : position}
+          cancel="h4"
           onDrag={onStartDrag}
           onStop={handleDragStop}
           bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
