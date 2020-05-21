@@ -30,8 +30,8 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   useEffect(() => {
     const myVideo = document.createElement('video');
     myVideo.setAttribute('objectFit', 'fill');
-    myVideo.setAttribute('width', '100%');
-    myVideo.setAttribute('maxHeight', '100%');
+    myVideo.setAttribute('width', `${track.dimensions.width || 320}`);
+    myVideo.setAttribute('height', `${track.dimensions.height || 240}`);
     setVideo(myVideo);
     const el = ref.current; //set to the video when there's a change in...something
     console.log('What is el', el);
@@ -62,23 +62,23 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
     let stopLoop = false;
     //temp canvas
     const canvas2 = document.createElement('canvas');
-    canvas2.setAttribute('width', '640');
-    canvas2.setAttribute('height', '480');
+    canvas2.setAttribute('width', `${track.dimensions.width || 320}`);
+    canvas2.setAttribute('height', `${track.dimensions.height || 240}`);
     const canvas2ctx = canvas2.getContext('2d');
 
     function drawVideo() {
       if (video && ref.current) {
         // console.log('VIDEO Width', video.width);
         // console.log('VIDEO Height', video.height);
-        canvas2ctx.drawImage(video, 0, 0, 640, 480);
-        const frame = canvas2ctx.getImageData(0, 0, 640, 480);
+        canvas2ctx.drawImage(video, 0, 0, track.dimensions.width || 320, track.dimensions.height || 240);
+        const frame = canvas2ctx.getImageData(0, 0, track.dimensions.width || 320, track.dimensions.height || 240);
         // console.log('Frame', frame);
 
-        // ref.current.setAttribute('width', '640');
-        // ref.current.setAttribute('height', '480');
+        // ref.current.setAttribute('width', '(track.dimensions.width||320)');
+        // ref.current.setAttribute('height', '(track.dimensions.height||240)');
         const cctx = ref.current.getContext('2d'); //ref referring to output canvas below
-        cctx.clearRect(0, 0, 640, 480);
-        let out_image = cctx.getImageData(0, 0, 640, 480);
+        cctx.clearRect(0, 0, track.dimensions.width || 320, track.dimensions.height || 240);
+        let out_image = cctx.getImageData(0, 0, track.dimensions.width || 320, track.dimensions.height || 240);
         // console.log('Canvas 1', cctx);
         // console.log('FRAME DATA', frame.data);
         // console.log('Video', video);
@@ -115,5 +115,5 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   // const style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
 
   // return <Video id="Video" ref={ref} style={style} />;
-  return <canvas ref={ref} width="640" height="480" />;
+  return <canvas ref={ref} width="320" height="240" />;
 }

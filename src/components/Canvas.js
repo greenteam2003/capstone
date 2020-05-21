@@ -1,6 +1,5 @@
 import React from 'react';
 const bodyPix = require('@tensorflow-models/body-pix');
-// import regeneratorRuntime from 'regenerator-runtime';
 
 class Canvas extends React.Component {
   constructor(props) {
@@ -18,14 +17,15 @@ class Canvas extends React.Component {
     this.setState({
       _isMounted: true,
     });
+    this.startCam();
   }
 
   componentWillUnmount() {
     this.setState({
       _isMounted: false,
     });
+    this.stopCam();
   }
-
   startCam() {
     var video = document.getElementById('video');
     if (navigator.mediaDevices.getUserMedia) {
@@ -37,6 +37,9 @@ class Canvas extends React.Component {
         .then(() => {
           console.log('Turning on CAM');
           this.setState({ camOn: true });
+        })
+        .then(() => {
+          this.segmentAndMask();
         })
         .catch(function(err0r) {
           console.log('Something went wrong!', err0r);
@@ -95,6 +98,7 @@ class Canvas extends React.Component {
         //dWidth: width to draw the image in the destination canvas: allowing for scaling; default: won't scale image
 
         //Draws the video into the intial canvas
+
         ctx_tmp.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         //getImageData returns the imageData for the part of the inital canvas that is specified (ie. the whole canvas)
 
@@ -145,7 +149,6 @@ class Canvas extends React.Component {
         init();
       });
     } else {
-      console.log('Please turn on the camera first!');
     }
   }
   // continuouslySegmentAndMask() {
@@ -162,7 +165,6 @@ class Canvas extends React.Component {
   // }
 
   render() {
-    console.log('PROPS', this.props);
     if (!navigator.mediaDevices.getUserMedia) {
       return <h2>Loading...</h2>;
     }
@@ -170,11 +172,7 @@ class Canvas extends React.Component {
       <div>
         <div id="container">
           <video autoPlay={true} id="video" width="50" height="30" hidden />
-          <div className="buttons">
-            <button onClick={this.startCam}>START</button>
-            <button onClick={this.stopCam}>STOP</button>
-            <button onClick={this.segmentAndMask}>SEGMENT</button>
-          </div>
+          <div className="buttons" />
           <hr />
           {/* OUTPUT CANVAS */}
           <canvas id="output-canvas" hidden />
