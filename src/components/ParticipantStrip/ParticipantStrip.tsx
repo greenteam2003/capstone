@@ -8,6 +8,8 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
+import Dropdown from 'react-dropdown';
+import 'react-dropdown/style.css';
 
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
@@ -16,68 +18,96 @@ export default function ParticipantStrip() {
   const localParticipant = room.localParticipant;
   const roomName = room.name;
   const [dbRoom] = useObjectVal(db.ref('/' + roomName));
+  const [background] = useObjectVal(db.ref('/' + roomName + '/background')) as any;
 
   const participants = useParticipants();
   const [selectedParticipant, setSelectedParticipant] = useSelectedParticipant();
+
+  const [currentBackground, setBackground] = useState(
+    'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)'
+  );
 
   // const [ localPosition, setLocalPosition ] = useState(
   // 	dbRoom ? dbRoom[localParticipant.identity].position : position
   // );
   // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
-  const [ourParticipant, setOurParticipant] = useState(selectedParticipant);
 
   ///our selected participan tshould always be either the previous selected partiicpant,
   ///or the new selected partiicpant, never null
 
   useEffect(() => {
-    if (selectedParticipant) {
-      setOurParticipant(selectedParticipant);
+    if (background) {
+      setBackground(background);
     }
   });
 
   function onStartDrag(e, position) {
     e.preventDefault();
-
-    if (ourParticipant) {
-      if (ourParticipant.identity === localParticipant.identity) {
-        console.log('hmm');
-      } else {
-        console.log('test');
-      }
-    }
   }
 
   function handleDragStop(e, localPosition) {
-    console.log('localPosition', localPosition);
     e.preventDefault();
-    console.log('target', e.target);
-    // console.log('H4?', e.target.getElementsByTagName('h4'));
+    //grabbing participants name
     const participant = e.target.getElementsByTagName('h4')[0].innerText;
-    console.log('participant', participant);
-    // console.log('room', roomName);
-    // console.log('localPosition', localPosition);
-    // console.log('DBROOM', dbRoom);
-    const newPosition = { x: localPosition.x, y: localPosition.y };
 
+    const newPosition = { x: localPosition.x, y: localPosition.y };
+    // updating new position in firebase
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
+
+  }
+  function changeBackground(e) {
+    const newBackground = e.value;
+    db.ref(`${roomName}/background`).set(newBackground);
+    // setBackground(newBackground);
   }
   let initialPosition = { x: 0, y: 0 };
+
+  // const defaultOption = 'Where you wanna go?';
+  const [options] = useState([
+    {
+      label: 'Bada Bing',
+      value: 'url(https://melmagazine.com/wp-content/uploads/2019/01/badabing-1280x533.jpg)',
+    },
+    {
+      label: 'BBQ',
+      value: 'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+    },
+    {
+      label: 'European getaway',
+      value:
+        'url(https://c8.alamy.com/comp/G24JXH/summer-holidays-vacation-happy-people-concept-group-of-friends-jumping-G24JXH.jpg)',
+    },
+    {
+      label: 'Summer vibes',
+      value:
+        'url(https://previews.123rf.com/images/gmast3r/gmast3r1709/gmast3r170901279/85853167-young-people-group-tropical-beach-palm-trees-friends-walking-speaking-holiday-sea-summer-vacation-oc.jpg)',
+    },
+  ]);
+  function handleImageUpload(e) {
+    console.log('imageEvent', e);
+  }
+
   return (
     <div
       style={{
-        backgroundImage:
-          'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)',
+        backgroundImage: currentBackground,
         backgroundSize: `100%`,
       }}
     >
+      <div style={{ width: '300px', position: 'absolute', top: 0, left: window.innerWidth - 300 }}>
+        <Dropdown options={options} onChange={changeBackground} placeholder={'Where you wanna go?'} />
+      </div>
       <Draggable
         position={
           dbRoom && dbRoom[localParticipant.identity] ? dbRoom[localParticipant.identity].position : initialPosition
         }
         onDrag={onStartDrag}
         onStop={handleDragStop}
+        cancel="h4"
+        bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
+        ///height of the draggable area minus height of the navigation bar
       >
-        <div style={{ width: '640px', height: '480px' }}>
+        <div style={{ width: '640px', height: '480px', position: 'absolute', top: 0, left: 0 }}>
           <Participant
             key={localParticipant.sid}
             participant={localParticipant}
@@ -87,26 +117,29 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        <div>
-          <div className={participant.identity} />
-          <Draggable
-            position={dbRoom ? dbRoom[participant.identity].position : position}
-            onDrag={onStartDrag}
-            onStop={handleDragStop}
-          >
-            <div style={{ width: '640px', height: '480px' }}>
-              <Participant
-                key={participant.sid}
-                participant={participant}
-                isSelected={selectedParticipant === participant}
-                onClick={() => setSelectedParticipant(participant)}
-              />
-            </div>
-          </Draggable>
-        </div>
+
+        ///how is it achieving that absolute position?
+        ///absolutely relative to what?
+        //anything above it WITH A POSITION
+
+        <Draggable
+          key={participant.identity}
+          position={dbRoom ? dbRoom[participant.identity].position : position}
+          onDrag={onStartDrag}
+          onStop={handleDragStop}
+          cancel="h4"
+          bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
+        >
+          <div style={{ width: '640px', height: '480px', position: 'absolute', top: 0, left: 0 }}>
+            <Participant
+              key={participant.sid}
+              participant={participant}
+              isSelected={selectedParticipant === participant}
+              onClick={() => setSelectedParticipant(participant)}
+            />
+          </div>
+        </Draggable>
       ))}
     </div>
   );
 }
-
-// const { error, setError } = useAppState();
