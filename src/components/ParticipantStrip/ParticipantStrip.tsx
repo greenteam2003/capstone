@@ -9,23 +9,6 @@ import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
 
-// const Container = styled('div')(({ theme }) => ({
-//   padding: '0.5em',
-//   overflowY: 'auto',
-//   [theme.breakpoints.down('xs')]: {
-//     overflowY: 'initial',
-//     overflowX: 'auto',
-//     padding: 0,
-//     display: 'flex',
-//   },
-// }));
-
-// const ScrollContainer = styled('div')(({ theme }) => ({
-//   [theme.breakpoints.down('xs')]: {
-//     display: 'flex',
-//   },
-// }));
-
 export default function ParticipantStrip() {
   const [position] = useObjectVal<ControlPosition>(db.ref('roomId/name'));
 
@@ -77,15 +60,9 @@ export default function ParticipantStrip() {
     const newPosition = { x: localPosition.x, y: localPosition.y };
 
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
-
-    console.log();
-
-    // send to firebase
   }
   let initialPosition = { x: 0, y: 0 };
   return (
-    // <Container>
-    //   <ScrollContainer>
     <div
       style={{
         backgroundImage:
@@ -129,8 +106,6 @@ export default function ParticipantStrip() {
         </div>
       ))}
     </div>
-    //   </ScrollContainer>
-    // </Container>
   );
 }
 
