@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+
 export default function ParticipantStrip() {
   const classes = useStyles();
   const roomState = useRoomState();
@@ -79,6 +80,12 @@ export default function ParticipantStrip() {
     const newPosition = { x: localPosition.x, y: localPosition.y };
     // updating new position in firebase
     db.ref(`${roomName}/${participant}/position`).set(newPosition);
+
+  }
+  function changeBackground(e) {
+    const newBackground = e.value;
+    db.ref(`${roomName}/background`).set(newBackground);
+    // setBackground(newBackground);
   }
   function changeBackground(e) {
     const newBackground = e.value;
@@ -166,6 +173,7 @@ export default function ParticipantStrip() {
         ///height of the draggable area minus height of the navigation bar
       >
         <div style={{ width: '320px', height: '240px', position: 'absolute', top: 0, left: 0 }}>
+
           <Participant
             key={localParticipant.sid}
             participant={localParticipant}
@@ -184,6 +192,7 @@ export default function ParticipantStrip() {
           bounds={{ top: 0, left: 0, right: window.innerWidth - 300, bottom: window.innerHeight - 300 }}
         >
           <div style={{ width: '320px', height: '240px', position: 'absolute', top: 0, left: 0 }}>
+
             <Participant
               key={participant.sid}
               participant={participant}

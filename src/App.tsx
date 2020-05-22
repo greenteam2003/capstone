@@ -48,6 +48,7 @@ export default function App() {
               <h3 style={{ textAlign: 'center' }}>
                 Enter your room code to join your friends, or make your own to create a room
               </h3>
+
             </div>
           </div>
         ) : (

@@ -157,7 +157,7 @@ class Canvas extends React.Component {
         <div id="container">
           <video autoPlay={true} id="video" width="320" height="240" hidden />
           <div className="buttons" />
-          {/* <hr /> */}
+
           {/* OUTPUT CANVAS */}
           <canvas id="output-canvas" width="320" height="240" hidden />
         </div>
