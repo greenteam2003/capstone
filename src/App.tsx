@@ -9,6 +9,7 @@ import Room from './components/Room/Room';
 
 import useHeight from './hooks/useHeight/useHeight';
 import useRoomState from './hooks/useRoomState/useRoomState';
+import { findByLabelText } from '@testing-library/react';
 
 const Container = styled('div')({
   display: 'grid',
@@ -38,15 +39,16 @@ export default function App() {
             <LocalVideoPreview />
             <div
               style={{
-                width: '600px',
+                width: '100vw',
                 position: 'absolute',
                 top: window.innerHeight / 3,
-                right: 400,
               }}
             >
-              <h2>
-                Welcome to groupHang. Enter your room code to join your friends, or make your own to create a room
-              </h2>
+              <h2 style={{ textAlign: 'center' }}>Welcome to Gather</h2>
+              <h3 style={{ textAlign: 'center' }}>
+                Enter your room code to join your friends, or make your own to create a room
+              </h3>
+
             </div>
           </div>
         ) : (

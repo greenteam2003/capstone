@@ -27,6 +27,8 @@ export default function Publication({ publication, isLocal, disableAudio, videoP
 
   switch (track.kind) {
     case 'video':
+      track.dimensions.width = 320;
+      track.dimensions.height = 240;
       return (
         <VideoTrack
           track={track as IVideoTrack}

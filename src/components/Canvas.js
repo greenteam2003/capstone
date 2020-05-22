@@ -90,8 +90,6 @@ class Canvas extends React.Component {
         computeFrame();
       }
       function computeFrame() {
-        // console.log('computing frames but for how long?');
-        // console.log('video in compute frame', video);
         //drawImage(image, dx, dy, dWidth, dHeight, )
         //image: element to draw into the canvas context
         //dx: x coordinate where to place top left corner of source image in the destination canvas
@@ -137,8 +135,6 @@ class Canvas extends React.Component {
           //imageData: ImageData obj with array of pixel values
           //dx: x-coordinate where to put the imagedata in the destination canvas; destination canvas being: ctx_out
           ctx_out.putImageData(out_image, 0, 0);
-          // setTimeout(computeFrame, 0);
-          //getAnimationFrame(computeFrame)
           requestIdleCallback(computeFrame);
         });
       }
@@ -151,18 +147,6 @@ class Canvas extends React.Component {
     } else {
     }
   }
-  // continuouslySegmentAndMask() {
-  //   //continuously renders next frame of video
-  //   var video = document.getElementById('video');
-  //   if (video.srcObject && this.state._isMounted) {
-  //     requestAnimationFrame(() => {
-  //       console.log('this', this);
-  //       this.segmentAndMask();
-  //     });
-  //   }
-  //   //if cam is running then continue this function if not, then stop this function
-  //   //Also, check if component is mounted first before running this fn
-  // }
 
   render() {
     if (!navigator.mediaDevices.getUserMedia) {
@@ -171,11 +155,11 @@ class Canvas extends React.Component {
     return (
       <div>
         <div id="container">
-          <video autoPlay={true} id="video" width="50" height="30" hidden />
+          <video autoPlay={true} id="video" width="320" height="240" hidden />
           <div className="buttons" />
-          <hr />
+
           {/* OUTPUT CANVAS */}
-          <canvas id="output-canvas" hidden />
+          <canvas id="output-canvas" width="320" height="240" hidden />
         </div>
       </div>
     );

@@ -13,6 +13,8 @@ export default function useLocalVideoToggle() {
 
   const toggleVideoEnabled = useCallback(() => {
     if (videoTrack) {
+      videoTrack.dimensions.width = 320;
+      videoTrack.dimensions.height = 240;
       if (localParticipant) {
         const localTrackPublication = localParticipant.unpublishTrack(videoTrack);
         // TODO: remove when SDK implements this event. See: https://issues.corp.twilio.com/browse/JSDK-2592
@@ -22,6 +24,8 @@ export default function useLocalVideoToggle() {
     } else {
       getLocalVideoTrack().then((track: LocalVideoTrack) => {
         if (localParticipant) {
+          track.dimensions.width = 320;
+          track.dimensions.height = 240;
           localParticipant.publishTrack(track, { priority: 'low' });
         }
       });

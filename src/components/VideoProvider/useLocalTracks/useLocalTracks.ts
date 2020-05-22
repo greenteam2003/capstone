@@ -78,7 +78,6 @@ export function useLocalVideoTrack() {
 
     return ensureMediaPermissions().then(() => {
       const canvas = document.getElementById('output-canvas') as any;
-     
       if (canvas) {
         const canvasCaptureStream = canvas.captureStream(25).getVideoTracks();
         if (canvas.captureStream(25).getVideoTracks().length > 0) {

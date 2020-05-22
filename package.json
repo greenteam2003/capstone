@@ -38,6 +38,7 @@
     "react-dropdown": "^1.7.0",
     "react-firebase-hooks": "^2.1.1",
     "react-konva": "^16.13.0-2",
+    "react-rnd": "^10.1.10",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "strip-color": "^0.1.0",
