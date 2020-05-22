@@ -12,7 +12,6 @@ import { useObjectVal } from 'react-firebase-hooks/database';
 import { db } from '../../firebase';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { setEnvironmentGlobal } from '@tensorflow/tfjs-core/dist/environment';
-import { Rnd } from 'react-rnd';
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
@@ -29,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
       transition: 'opacity 1.2s, transform 1.2s, visibility 0s 1.2s',
       opacity: 0,
       visibility: 'hidden',
-      // maxWidth: 'min-content',
       '&.showControls, &:hover': {
         transition: 'opacity 0.6s, transform 0.6s, visibility 0s',
         opacity: 1,
@@ -63,14 +61,6 @@ export default function ParticipantStrip() {
     'url(https://image.shutterstock.com/image-photo/group-happy-friends-having-fun-260nw-1079761151.jpg)'
   );
 
-  // const [ localPosition, setLocalPosition ] = useState(
-  // 	dbRoom ? dbRoom[localParticipant.identity].position : position
-  // );
-  // const [remotePosition, setRemotePosition] = useState(room ? room[participant.identity].position : position);
-
-  ///our selected participan tshould always be either the previous selected partiicpant,
-  ///or the new selected partiicpant, never null
-
   useEffect(() => {
     if (background) {
       setBackground(background);
@@ -92,22 +82,18 @@ export default function ParticipantStrip() {
   }
   function changeBackground(e) {
     const newBackground = e.value;
-    console.log('OPTIONS', newBackground);
     db.ref(`${roomName}/background`).set(newBackground);
     // setBackground(newBackground);
   }
 
   function changeOwnBackground(e) {
-    console.log('event', e);
     const newBackground = `url(${e.target.value})`;
-    console.log('NEW BACK', newBackground);
     setBackground(newBackground);
     db.ref(`${roomName}/background`).set(newBackground);
   }
 
   let initialPosition = { x: 0, y: 0 };
 
-  // const defaultOption = 'Where you wanna go?';
   const [options] = useState([
     {
       label: 'Bada Bing',
@@ -144,8 +130,6 @@ export default function ParticipantStrip() {
           position: 'absolute',
           display: 'flex',
           justifyContent: 'flex-end',
-          // display: 'flex',
-          // justifyContent: 'flex-end' /*top: 0, left: window.innerWidth - 300 */,
         }}
       >
         <Dropdown options={options} onChange={changeBackground} placeholder={'Where you wanna go?'} />
@@ -191,10 +175,6 @@ export default function ParticipantStrip() {
         </div>
       </Draggable>
       {participants.map(participant => (
-        ///how is it achieving that absolute position?
-        ///absolutely relative to what?
-        //anything above it WITH A POSITION
-
         <Draggable
           key={participant.identity}
           position={dbRoom ? dbRoom[participant.identity].position : position}
