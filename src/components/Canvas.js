@@ -60,7 +60,6 @@ class Canvas extends React.Component {
   }
 
   async segmentAndMask() {
-    console.log('WHAT is the STATE', this.state);
     if (this.state.camOn && this.state._isMounted) {
       let video, c_out, ctx_out, c_tmp, ctx_tmp, model;
       const bodyPixConfig = {
@@ -71,7 +70,7 @@ class Canvas extends React.Component {
       };
       const segmentationConfig = {
         internalResolution: 'high',
-        segmentationThreshold: 0.3, //increase for tighter crop, based on probability pixel=person
+        segmentationThreshold: 0.3, 
         scoreThreshold: 0.7,
       };
       function init() {
@@ -90,10 +89,7 @@ class Canvas extends React.Component {
         computeFrame();
       }
       function computeFrame() {
-        //drawImage(image, dx, dy, dWidth, dHeight, )
-        //image: element to draw into the canvas context
-        //dx: x coordinate where to place top left corner of source image in the destination canvas
-        //dWidth: width to draw the image in the destination canvas: allowing for scaling; default: won't scale image
+      
 
         //Draws the video into the intial canvas
 
@@ -102,9 +98,7 @@ class Canvas extends React.Component {
 
         let frame = ctx_tmp.getImageData(0, 0, video.videoWidth, video.videoHeight);
 
-        //same as when we do net.segmentPerson
-        //they pass in the canvas with the video drawn into it
-        //then they get the imageData for the blank output canvas
+
         model.segmentPerson(c_tmp, segmentationConfig).then(segmentation => {
           ctx_out.clearRect(0, 0, c_out.width, c_out.height);
           let out_image = ctx_out.getImageData(0, 0, video.videoWidth, video.videoHeight);
@@ -132,7 +126,6 @@ class Canvas extends React.Component {
           }
 
           //putImageData(imageData, dx, dy)
-          //imageData: ImageData obj with array of pixel values
           //dx: x-coordinate where to put the imagedata in the destination canvas; destination canvas being: ctx_out
           ctx_out.putImageData(out_image, 0, 0);
           requestIdleCallback(computeFrame);
